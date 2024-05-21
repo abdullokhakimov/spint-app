@@ -1,0 +1,205 @@
+.authentication {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: space-between;
+}
+
+.authentication__background {
+	width: 65%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.authentication__wrapper {
+	width: 35%;
+	height: 100%;
+	background: var(--white);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 50px;
+}
+
+.authentication__logo {
+	width: 146px;
+	height: 40px;
+}
+
+.authentication__title {
+	font-size: 28px;
+	font-weight: 700;
+	color: var(--black);
+}
+
+.authentication__subtitle {
+	margin-top: 15px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--grey);
+}
+
+.authentication__form {
+	width: 400px;
+	margin: 30px auto 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 15px;
+}
+
+.authentication__form__field {
+	width: 100%;
+	position: relative;
+}
+
+.authentication__form__field__input {
+	width: 100%;
+	padding: 11px 20px;
+	border: 2px solid var(--grey-light);
+	border-radius: 14px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--black);
+	z-index: 100;
+}
+
+.authentication__form__field__input:focus {
+	border-color: #5153E4;
+}
+
+.authentication__form__field__label {
+	position: absolute;
+	top: 13px;
+	left: 18px;
+	padding: 0 2px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--grey);
+	background-color: var(--white);
+	transition: 0.1s;
+	pointer-events: none;
+}
+
+.authentication__form__field__input:focus~.authentication__form__field__label,
+.authentication__form__field__input:valid~.authentication__form__field__label {
+	top: -6px;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--blue);
+}
+
+.authentication__form__field__error-message {
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--red);
+	margin: 5px 0 0 5px;
+}
+
+.singup__form__submit {
+	width: 100%;
+	padding: 13px 0;
+	border-radius: 14px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--white);
+	background-color: var(--blue);
+	text-align: center;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.singup__form__submit:active {
+	transform: scale(0.97);
+}
+
+.singup__form__submit.disabled {
+	background-color: var(--blue-disabled);
+}
+
+.authentication__redirect {
+	margin-top: 60px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+.authentication__redirect__text {
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--grey);
+}
+
+.authentication__redirect__link {
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--blue);
+}
+
+.authentication__reset-password__link {
+	width: 100%;
+	text-align: right;
+	margin-top: -5px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--blue);
+}
+
+.authentication__lang {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+}
+
+.authentication__lang__button {
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--grey);
+	cursor: pointer;
+}
+
+.authentication__lang__button.selected {
+	font-weight: 700;
+	color: var(--black);
+}
+
+@media (max-width: 1300px) {
+	.authentication__background {
+		width: 70%;
+		margin-left: -100px;
+	}
+
+	.authentication__wrapper {
+		width: 30%;
+		padding-right: 100px;
+	}
+}
+
+@media (max-width: 500px) {
+	.authentication {
+		height: 100%;
+	}
+
+	.authentication__background {
+		display: none;
+	}
+
+	.authentication__wrapper {
+		width: 100%;
+		padding-right: 0;
+		padding: 0 15px;
+	}
+
+	.authentication__logo {
+		margin-top: 50px;
+	}
+
+	.authentication__form,
+	.authentication__content {
+		width: 100%;
+	}
+}

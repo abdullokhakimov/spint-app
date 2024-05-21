@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-05 12:13+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: accounts/views.py:98
+msgid "Неправильный формат времени"
+msgstr "Noto'g'ri vaqt"
+
+#: accounts/views.py:102
+msgid "Создатель бронирования не может быть в списке приглашенных пользователей"
+msgstr "Bandlovni yaratgan odam taklif qilingan foydalanuvchilar ro'yxatida bo'lishi mumkin emas"
+
+#: accounts/views.py:111
+msgid "Бронь на число {request.data.get('date')}, и время {t} уже существует"
+msgstr "{request.data.get('date')} sana va {t} vaqtiga bandlov allaqachon mavjud"
+
+#: accounts/views.py:132
+msgid "Требуется данные пользователя"
+msgstr "Foydalanuvchi maʼlumotlari talab qilinadi"
+
+#: accounts/views.py:138
+msgid "Пользователь не найден"
+msgstr "Foydalanuvchi topilmadi"
+
+#: accounts/views.py:142
+msgid "Пользователь не в списке приглашенных пользователей"
+msgstr "Foydalanuvchi taklif qilingan foydalanuvchilar ro'yxatida yo'q"
+
+#: accounts/views.py:162
+msgid "Приглашение не найдено"
+msgstr "Taklif topilmadi"
+
+#: accounts/views.py:165
+msgid "Пользователь успешно исключен из списка приглашенных пользователей"
+msgstr "Foydalanuvchi taklif qilingan foydalanuvchilar ro'yxatidan muvaffaqiyatli olib tashlandi"
+
+#: accounts/views.py:178
+msgid "Вы не можете приглашать самого себя"
+msgstr "Siz o'zingizni taklif qila olmaysiz"
+
+#: accounts/views.py:183
+msgid "Только пользователь, создавший бронирование, может отправлять приглашения."
+msgstr "Faqat bandlovni yaratgan shaxs taklifnoma yuborishi mumkin."
+
+#: accounts/views.py:189
+msgid "Вы уже отправляли приглашение этому пользователю для этого бронирования."
+msgstr "Siz allaqachon ushbu foydalanuvchiga bandlov uchun taklifnoma yuborgansiz."
+
+#: accounts/views.py:206
+msgid "Приглашение отправлено"
+msgstr "Taklif yuborildi"
+
+#: accounts/views.py:246
+msgid "Неправильный статус"
+msgstr "Noto'g'ri holat"
+
+#: accounts/views.py:249
+#, python-brace-format
+msgid "Статус приглашения {invitation.id} обновлен на {invitation.status}"
+msgstr "{invitation.id} taklifi holati {invitation.status} ga yangilandi"
+

@@ -1,0 +1,47 @@
+import { useEffect } from "react";
+import DatePicker from 'react-datepicker';
+import { useTranslation } from "react-i18next";
+
+function Datepicker({selectedDate, setSelectedDate}: {selectedDate: Date; setSelectedDate: (date: Date) => void;}) {		
+	const { i18n } = useTranslation();
+	
+	const monthString = () => {
+		const month = selectedDate.getMonth()+1;
+		return `${month < 10 ? '0' + month : month}`
+	}
+	
+	useEffect(() => {
+        const dateItems = document.querySelectorAll('.react-datepicker__day');
+        dateItems.forEach(item => {
+            if (!item.classList.contains('react-datepicker__day--disabled') && !item.classList.contains('react-datepicker__day--outside-month')) {
+				const date = new Date(`2024-${monthString()}-${parseInt(item.textContent) < 10 ? '0' + item.textContent : item.textContent}`);
+				
+				let daysOfWeek = ['']
+				if (i18n.language == 'uz') {
+					daysOfWeek = ['YA', 'DU', 'SE', 'CH', 'PA', 'JU', 'SH'];
+				}else{
+					daysOfWeek = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];	
+				}
+				const currentDayOfWeek = daysOfWeek[date.getDay()];
+				
+				const spanDay = document.createElement("span");
+				const spanDayText = document.createTextNode(`${currentDayOfWeek}`);
+				spanDay.appendChild(spanDayText);
+				item.appendChild(spanDay);
+            }
+        });
+    }, []);
+	
+	return (
+		<DatePicker
+		selected={selectedDate}
+		minDate={new Date()}
+		onChange={(date) => setSelectedDate(date)}
+		inline
+		showMonthDropdown={false}
+      	showWeekNumbers={false}
+		/>
+	);
+}
+
+export default Datepicker

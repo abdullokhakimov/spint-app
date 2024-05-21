@@ -1,0 +1,188 @@
+.profile{
+	width: 100%;
+	height: 100%;
+	padding: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.profile__title{
+	font-size: 32px;
+	font-weight: 700;
+	color: var(--black);
+}
+.profile__logo {
+	margin: 50px auto 0 auto;
+	width: 100px;
+	height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 48px;
+	font-weight: 500;
+	color: var(--white);
+	border-radius: 50%;
+	background: var(--blue);
+	text-transform: uppercase;
+}
+
+.profile__username{
+	font-size: 28px;
+	font-weight: 600;
+	color: var(--black);
+	margin: 15px auto 0 auto;
+}
+.profile__location{
+	margin: 10px auto 0 auto;
+	display: flex;
+	gap: 5px;
+	padding: 5px 13px;
+	border-radius: 15px;
+	background-color: var(--grey-light);
+}
+.profile__location svg{
+	width: 17px;
+	height: 17px;
+}
+.profile__location span {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--black);
+}
+.profile__email,
+.profile__about__button,
+.profile__contacts__button,
+.profile__languages__button{
+	max-width: 400px;
+	width: 100%;
+	margin: 50px auto 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 24px;
+	background-color: var(--grey-light);
+	border-radius: 14px;
+}
+.profile__about__button,
+.profile__contacts__button,
+.profile__languages__button{
+	margin: 15px auto 0 auto;
+	justify-content: space-between;
+	cursor: pointer;
+	transition: 0.3s;
+}
+.profile__about__button:active,
+.profile__contacts__button:active,
+.profile__languages__button:active{
+	transform: scale(0.97);
+}
+.profile__about__button__text,
+.profile__contacts__button__text,
+.profile__languages__button__text{
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.profile__about__button__text span,
+.profile__email span,
+.profile__contacts__button__text span,
+.profile__languages__button__text span{
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--black);
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.profile__email svg,
+.profile__about__button__text svg,
+.profile__contacts__button__text svg,
+.profile__languages__button__text svg {
+	width: 22px;
+	height: 22px;
+}
+.profile__about__button__arrow,
+.profile__contacts__button__arrow
+.profile__languages__button__arrow {
+	height: 14px;
+}
+.profile__language__modal{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	gap: 20px;
+}
+.profile__language__modal__button{
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--black);
+	cursor: pointer;
+}
+.profile__logout {
+	margin: 30px auto 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+	transition: 0.2s;
+}
+.profile__logout:active{
+	transform: scale(0.97);
+}
+.profile__logout span{
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--red);
+}
+.profile__logout svg{
+	width: 22px;
+	height: 22px;
+}
+.profile__contacts__modal__phone,
+.profile__contacts__modal__mail {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+.profile__contacts__modal__phone span,
+.profile__contacts__modal__mail span{
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--grey);
+}
+.profile__contacts__modal__phone a,
+.profile__contacts__modal__mail a {
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--black);
+}
+.profile__about__modal{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 30px;
+}
+.profile__about__modal{
+	max-height: 60vh;
+	overflow-y: scroll;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+.profile__about__modal p{
+	font-size: 16px;
+	font-weight: 400;
+	color: var(--black);
+	text-align:justify;
+}
+.profile__about__modal span{
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--grey);
+}
+
+@media (max-width: 500px) {
+	
+}
