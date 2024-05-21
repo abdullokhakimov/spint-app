@@ -9,7 +9,7 @@ lerna-debug.log*
 
 # Django 
 venv 
-
+db.sqlite3
 # Node
 node_modules
 dist
