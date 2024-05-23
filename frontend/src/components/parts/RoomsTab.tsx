@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { Room } from '../../types';
 import { motion } from "framer-motion";
 
-function RoomTabs({ selectedRoomID, onSelectRoom, rooms }: { selectedRoom: number; onSelectRoom: (room: Room) => void; rooms: Room[];}) {
-	const handleSelectRoom = (room) => {
+function RoomTabs({ selectedRoomID, onSelectRoom, rooms }: { selectedRoomID: number | undefined; onSelectRoom: (room: Room) => void; rooms: Room[];}) {
+	const handleSelectRoom = (room: Room) => {
 		onSelectRoom(room);
 	};
+
 	
 	const [isScrolled, setIsScrolled] = useState(false);
 

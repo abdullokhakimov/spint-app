@@ -19,7 +19,6 @@ function Notifications() {
 	
 	useEffect(() => {
         if (acceptInvitationStatus === 'success' || rejectInvitationStatus === 'success') {
-            // Reload notifications
             refetchNotifications();
         }
     }, [acceptInvitationStatus, rejectInvitationStatus, refetchNotifications]);
@@ -31,7 +30,7 @@ function Notifications() {
 				<ul className="notifications__list__skeleton">
 					<Skeleton count={6} className="notifications__list__skeleton__item"/>
 				</ul>
-			) : notifications?.length < 1 ? (
+			) : notifications == undefined || notifications == null || notifications.length < 1 ? (
 				<div className="notifications__noresult">
 					<img src="/assets/images/no-results-img.png" alt="" />
 
@@ -41,7 +40,7 @@ function Notifications() {
 				</div>
 			) : (
 				<ul className="notifications__list">
-					{ notifications?.map((notification, index) => (
+					{ notifications.map((notification, index) => (
 						<li className="notifications__list__item" key={index}>
 							<div className="notifications__list__item__header">
 								<h5 className="notifications__list__item__header__title">{t("notifications.item.title")}</h5>

@@ -4,19 +4,23 @@ import { apiCheckAuthenticated, apiLoadUser } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
  
-const initialUser = {
-	id: "",
+const initialUser: typeUser = {
+	id: 0,
 	username: "",
 	email: "",
-	is_owner: false
-} 
-
-const initialState = {
-	user: initialUser,
-	isLoading: false,
-	isAuthenticated: false,
-	checkAuthUser: async () => false as boolean,
+	is_owner: false,
 };
+
+const initialState: typeUserContext = {
+  user: initialUser,
+  isLoading: false,
+  isAuthenticated: false,
+  checkAuthUser: async () => false,
+  setUser: () => {},
+  setIsAuthenticated: () => {},
+  logout: async () => {},
+};
+
 
 export const AuthContext = createContext<typeUserContext>(initialState);
 
@@ -81,6 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		isLoading,
 		isAuthenticated,
 		checkAuthUser,
+		setUser,
+		setIsAuthenticated,
 		logout,
 	};
 

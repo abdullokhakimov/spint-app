@@ -46,13 +46,13 @@ const Timepicker: React.FC<TimepickerProps> = ({ selectedDate, interval, room, s
     }, [selectedDate, room]);
 
     // Function to handle time selection
-    const handleTimeSelect = (time) => {
+    const handleTimeSelect = (time: string) => {
         const index = selectedTimeRange.findIndex((rangeTime) => rangeTime === time);
 		
         if (index !== -1) {
             // If the time is already selected, remove it from the range
-            setSelectedTimeRange((prevRange) => prevRange.filter((rangeTime) => rangeTime !== time));
-        
+			setSelectedTimeRange((prevRange: string[]) => prevRange.filter((rangeTime: string) => rangeTime !== time));
+			
 			setTimeSlots(timeSlots.map(slot => {
 				if (slot.time === time) {
 					return { ...slot, selected: false };

@@ -3,10 +3,8 @@ import { Routes, Route } from 'react-router-dom'
 import AuthLayout from './_auth/AuthLayout'
 import { LoginForm, SignupForm, ActivateForm } from './_auth/forms'
 import RootLayout from './_root/RootLayout'
-import { Home, Notifications, Bookings, Profile, Teams } from './_root/pages'
+import { Home, Notifications, Bookings, Profile, Teams, FacilityDetail, NotFound } from './_root/pages'
 import { Toaster } from 'sonner'
-import FacilityDetail from './_root/pages/FacilityDetail'
-import NotFound from './_root/pages/NotFound'
 
 function App() {
 	return (
@@ -28,6 +26,7 @@ function App() {
 				</Route>
 					
 				<Route path="*" element={<NotFound/>}/>
+				<Route path="/404" element={<NotFound/>}/>
 			</Routes>
 
 			<Toaster position="top-right" expand={false} richColors/>

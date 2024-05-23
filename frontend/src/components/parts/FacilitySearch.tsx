@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce';
 import { SearchInputProps } from '../../types';
 import { useTranslation } from 'react-i18next';
 
-function FacilitySearch({ onSearch }: { onSearch: SearchInputProps}) {
+function FacilitySearch({ onSearch }: { onSearch: SearchInputProps['onSearch'] }) {
 	const { t } = useTranslation();
 	
 	const debouncedSearch = debounce(onSearch, 500);

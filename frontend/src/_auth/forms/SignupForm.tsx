@@ -2,7 +2,6 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 import { SignupValidation } from "../../services/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import FormField from "../../components/ui/FormField"
 import { Link, useNavigate } from "react-router-dom"
 import { useCreateNewUserMutation } from "../../services/react-query/queries"
 import { useUserContext } from "../../context/AuthContext"
@@ -42,34 +41,66 @@ function SignupForm() {
 				{t('authentication.login__subtitle')}
 			</p>
 			<form onSubmit={handleSubmit(onSubmit)} className="authentication__form">
-				<FormField
-					type="text"
-					label={t('authentication.login__username')}
-					name="username"
-					register={register}
-					error={errors.username}
-				/>
-				<FormField
-					type="email"
-					label={t('authentication.login__email')}
-					name="email"
-					register={register}
-					error={errors.email}
-				/>
-				<FormField
-					type="password"
-					label={t('authentication.login__password')}
-					name="password"
-					register={register}
-					error={errors.password}
-				/>
-				<FormField
-					type="password"
-					label={t('authentication.login__password__submit')}
-					name="re_password"
-					register={register}
-					error={errors.re_password}
-				/>
+				<div className="authentication__form__field">
+					<input 
+						type="text"
+						className="authentication__form__field__input" 
+						autoComplete="off"
+						required
+						{...register("username")}
+					/>
+					<label htmlFor="" className="authentication__form__field__label">
+						{t('authentication.login__username')}
+					</label>
+
+					{errors.username && <p className="authentication__form__field__error-message">{errors.username.message}</p>}
+				</div>
+
+				<div className="authentication__form__field">
+					<input 
+						type="email"
+						className="authentication__form__field__input" 
+						autoComplete="off"
+						required
+						{...register("email")}
+					/>
+					<label htmlFor="" className="authentication__form__field__label">
+						{t('authentication.login__email')}
+					</label>
+
+					{errors.email && <p className="authentication__form__field__error-message">{errors.email.message}</p>}
+				</div>
+
+				<div className="authentication__form__field">
+					<input 
+						type="password"
+						className="authentication__form__field__input" 
+						autoComplete="off"
+						required
+						{...register("password")}
+					/>
+					<label htmlFor="" className="authentication__form__field__label">
+						{t('authentication.login__password')}
+					</label>
+
+					{errors.password && <p className="authentication__form__field__error-message">{errors.password.message}</p>}
+				</div>
+				
+				<div className="authentication__form__field">
+					<input 
+						type="password"
+						className="authentication__form__field__input" 
+						autoComplete="off"
+						required
+						{...register("re_password")}
+					/>
+					<label htmlFor="" className="authentication__form__field__label">
+						{t('authentication.login__password__submit')}
+					</label>
+
+					{errors.re_password && <p className="authentication__form__field__error-message">{errors.re_password.message}</p>}
+				</div>
+				
 				<button className={`singup__form__submit ${isCreatingNewUser ? 'disabled' : ''}`} disabled={isCreatingNewUser} type="submit">
 					{isCreatingNewUser ? (
 						t('others.loading')

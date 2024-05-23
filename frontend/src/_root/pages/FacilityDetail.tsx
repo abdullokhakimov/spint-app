@@ -10,11 +10,12 @@ import { Room } from '../../types';
 import FacilityDetailsMaps from '../../components/parts/FacilityDetailsMap';
 import FacilityDetailsSkeleton from '../../components/parts/FacilityDetailsSkeleton';
 import FacilityDetailsContact from '../../components/parts/FacilityDetailsContact';
+import NotFound from './NotFound';
 
 function FacilityDetail() {
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string | undefined}>();
 
-    const { isLoading: isLoadingFacilityDetails, data: facilityDetails} = useLoadFacilityDetailsQuery({ id });
+    const { isLoading: isLoadingFacilityDetails, data: facilityDetails, error} = useLoadFacilityDetailsQuery({ id });
 	
 	const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
@@ -23,9 +24,12 @@ function FacilityDetail() {
 			setSelectedRoom(facilityDetails.rooms[0]);
 		}
 	}, [facilityDetails]);
+	
 	return (
         <section className="facility-details-wrap">
-			{isLoadingFacilityDetails ? (
+			{(id == undefined || facilityDetails == undefined || error) ? (
+                <NotFound/>
+            ) : isLoadingFacilityDetails ? (
 				<>
 					<FacilityDetailsSkeleton/>
 				</>	

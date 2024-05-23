@@ -1,5 +1,5 @@
 export type typeUser = {
-	id: string,
+	id: number,
 	username: string;
 	email: string;
 	is_owner: boolean
@@ -13,13 +13,14 @@ export type typeNewUser = {
 };
 
 export type typeUserContext = {
-	user: typeNewUser;
-	isLoading: boolean;
-	setUser: React.Dispatch<React.SetStateAction<typeNewUser>>;
-	isAuthenticated: boolean;
-	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-	checkAuthUser: () => Promise<boolean>;
-}
+  user: typeUser;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  checkAuthUser: () => Promise<boolean>;
+  setUser: React.Dispatch<React.SetStateAction<typeUser>>;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  logout: () => Promise<void>;
+};
 
 export type typeNavLink = {
 	svg: string;
@@ -51,7 +52,10 @@ export type Facility = {
 	end_time?: string;
 	phone?: string;
 }
-
+export type loadFacilities = {
+	next_page_param?: number;
+	results: Facility[];
+}
 export type ModalProps = {
   showModal: boolean;
   children: React.ReactNode;
@@ -67,16 +71,17 @@ export type FacilityListProps = {
 	setSelectedGameOption: (game: Game | null) => void;
 	selectedRegionOption: Region | null;
 	setSelectedRegionOption: (region: Region | null) => void;
+	showMapOnMobile: boolean;
 }
 export type FacilityFiltersProps = {
-	games: Game[];
-  	regions: Region[];
+	games: Game[] | undefined;
+  	regions: Region[] | undefined;
 	isLoadingFiltersData: boolean;
 	selectedGameOption: Game | null;
 	setSelectedGameOption: (game: Game | null) => void;
 	selectedRegionOption: Region | null;
 	setSelectedRegionOption: (region: Region | null) => void;
-	showMapOnMobile: boolean;
+	showMapOnMobile?: boolean;
 }
 
 export type FacilityMapCoordinates = {
@@ -101,21 +106,21 @@ export type Room = {
 	id: number;
 	title: string;
 	price: number;
-	bookings: Booking[],
-	benefits: Benefit[]
+	bookings: Booking[];
+	benefits: Benefit[];
 }
 export type FacilityDetails = {
 	id: number;
 	title: string;
-	game: Game[];
-	region: Region[];
+	game: Game;
+	region: Region;
 	rooms: Room[];
-	image_urls: string;
+	image_url: string;
 	address: string;
 	address_coordinates: string;
 	address_url: string;
 	start_time: string;
-	end_time : string;
+	end_time: string;
 	phone: string;
 }
 export type TimepickerProps = {
@@ -123,7 +128,7 @@ export type TimepickerProps = {
 	interval: number;
 	room: Room;
 	selectedTimeRange: string[];
-	setSelectedTimeRange: (string: string[]) => void;
+	setSelectedTimeRange: React.Dispatch<React.SetStateAction<string[]>>;
 	startTime: string; 
 	endTime: string;
 }
@@ -148,3 +153,8 @@ export type Notification = {
 	created_at: string;
 	invitation: number;
 }
+
+export type Languages = {
+	ru: { nativeName: string };
+	uz: { nativeName: string };
+};

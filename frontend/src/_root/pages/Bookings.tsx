@@ -11,7 +11,7 @@ function Bookings() {
 	const { t } = useTranslation();
 
     const { user, isAuthenticated } = useUserContext();
-	const { isLoading: isLoadingBookings, data: bookings, refetch: refetchBookings } = useLoadBookingsQuery({ id: user.id });
+	const { isLoading: isLoadingBookings, data: bookings } = useLoadBookingsQuery({ id: user.id });
 
     let content = null;	
 	
@@ -46,7 +46,7 @@ function Bookings() {
 						<h3 className="bookings__title">{t("bookings.user__title")}</h3>
 						<ul className="bookings__list">
 							{sortedBookings.map((booking, index) => (
-								<BookingItem key={index} booking={booking} refetchBookings={refetchBookings}/>
+								<BookingItem key={index} booking={booking}/>
 							))}
 						</ul>
 					</section>

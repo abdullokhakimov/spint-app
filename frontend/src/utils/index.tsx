@@ -41,52 +41,43 @@ export function getNextHour(time: string) {
 }
 
 export function formatDate(dateStr: string) {
-	let months = {}
-	if (i18n.language == 'ru') {
-		months = {
-			'01': 'января',
-			'02': 'февраля',
-			'03': 'марта',
-			'04': 'апреля',
-			'05': 'мая',
-			'06': 'июня',
-			'07': 'июля',
-			'08': 'августа',
-			'09': 'сентября',
-			'10': 'октября',
-			'11': 'ноября',
-			'12': 'декабря'
-		};
-	}else{
-		months = {
-			'01': 'yanvar',
-			'02': 'fevral',
-			'03': 'mart',
-			'04': 'aprel',
-			'05': 'may',
-			'06': 'iyun',
-			'07': 'iyul',
-			'08': 'avgust',
-			'09': 'sentyabr',
-			'10': 'oktyabr',
-			'11': 'noyabr',
-			'12': 'dekabr'
-		};
-	}
-    
+	const months: { [key: string]: string } = i18n.language === 'ru' ? {
+		'01': 'января',
+		'02': 'февраля',
+		'03': 'марта',
+		'04': 'апреля',
+		'05': 'мая',
+		'06': 'июня',
+		'07': 'июля',
+		'08': 'августа',
+		'09': 'сентября',
+		'10': 'октября',
+		'11': 'ноября',
+		'12': 'декабря'
+	} : {
+		'01': 'yanvar',
+		'02': 'fevral',
+		'03': 'mart',
+		'04': 'aprel',
+		'05': 'may',
+		'06': 'iyun',
+		'07': 'iyul',
+		'08': 'avgust',
+		'09': 'sentyabr',
+		'10': 'oktyabr',
+		'11': 'noyabr',
+		'12': 'dekabr'
+	};
 
-    const [day, month, year] = dateStr.split('-');
-	const monthString = () => {
-		const monthStringResul = parseInt(month) + 1;
-		return `${monthStringResul < 10 ? '0' + monthStringResul : monthStringResul}`
-	}
-    const formattedDate = `${year} ${months[monthString()]} ${parseInt(day)}`;
+	const [year, month, day] = dateStr.split('-');
+	const formattedDate = `${parseInt(day)} ${months[month]} ${year}`;
 
-    return formattedDate;
+	return formattedDate;
 }
 
 
 function isConsecutiveTime(prevTime: string, nextTime: string) {
+	if (!prevTime) return false;
     const prevTimestamp = new Date(`1970-01-01T${prevTime}`);
     const nextTimestamp = new Date(`1970-01-01T${nextTime}`);
     return nextTimestamp.getTime() - prevTimestamp.getTime() === 60 * 60 * 1000; // Проверяем, разница в 1 час
@@ -95,10 +86,10 @@ function isConsecutiveTime(prevTime: string, nextTime: string) {
 export function sortUserBookings(bookings: FilteredBooking[]){
 	// Сортировка массива по убыванию даты и времени
 	const sortedData = bookings.sort((a, b) => {
-		const dateA = new Date(`${a.date}T${a.time}`);
-		const dateB = new Date(`${b.date}T${b.time}`);
-		return dateB - dateA;
-	});
+        const dateA = new Date(`${a.date}T${a.time}`).getTime();
+        const dateB = new Date(`${b.date}T${b.time}`).getTime();
+        return dateB - dateA;
+    });
 
 	const mergedData = [];
     let prevRoom = null;
@@ -107,13 +98,21 @@ export function sortUserBookings(bookings: FilteredBooking[]){
     let currentGroup = null;
 
     for (const obj of sortedData) {
-        if (prevRoom === obj.room_id && prevDate === obj.date && isConsecutiveTime(obj.time, prevTime)) {
-            currentGroup.push(obj);
+        if (
+            prevRoom === obj.room_id &&
+            prevDate === obj.date &&
+            prevTime !== null &&
+            isConsecutiveTime(obj.time, prevTime)
+        ){
+            if (currentGroup) {
+                currentGroup.push(obj);
+            } else {
+                currentGroup = [obj];
+                mergedData.push(currentGroup);
+            }
         } else {
-            currentGroup = { ...obj };
             currentGroup = [obj];
             mergedData.push(currentGroup);
-            
         }
         prevRoom = obj.room_id;
         prevDate = obj.date;
@@ -127,10 +126,10 @@ export function sortUserBookings(bookings: FilteredBooking[]){
 export function sortOwnerBookings(bookings: FilteredBooking[]){
 	// Сортировка массива по убыванию даты и времени
 	const sortedData = bookings.sort((a, b) => {
-		const dateA = new Date(`${a.date}T${a.time}`);
-		const dateB = new Date(`${b.date}T${b.time}`);
-		return dateB - dateA;
-	});
+        const dateA = new Date(`${a.date}T${a.time}`).getTime();
+        const dateB = new Date(`${b.date}T${b.time}`).getTime();
+        return dateB - dateA;
+    });
 
 	const mergedData = [];
     let prevRoom = null;
@@ -140,8 +139,8 @@ export function sortOwnerBookings(bookings: FilteredBooking[]){
     let currentGroup = null;
 
     for (const obj of sortedData) {
-        if (prevRoom === obj.room_id && prevDate === obj.date && isConsecutiveTime(obj.time, prevTime) && prevUser === obj.user) {
-            currentGroup.push(obj);
+        if (prevRoom === obj.room_id && prevDate === obj.date && prevTime !== null && isConsecutiveTime(obj.time, prevTime) && prevUser === obj.user) {
+            currentGroup?.push(obj);
         } else {
             currentGroup = { ...obj };
             currentGroup = [obj];

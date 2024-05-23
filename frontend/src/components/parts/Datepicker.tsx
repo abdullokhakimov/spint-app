@@ -14,8 +14,9 @@ function Datepicker({selectedDate, setSelectedDate}: {selectedDate: Date; setSel
         const dateItems = document.querySelectorAll('.react-datepicker__day');
         dateItems.forEach(item => {
             if (!item.classList.contains('react-datepicker__day--disabled') && !item.classList.contains('react-datepicker__day--outside-month')) {
-				const date = new Date(`2024-${monthString()}-${parseInt(item.textContent) < 10 ? '0' + item.textContent : item.textContent}`);
-				
+				const dateText = item.textContent || ''; // Handle null case
+				const date = new Date(`2024-${monthString()}-${parseInt(dateText) < 10 ? '0' + dateText : dateText}`);
+			
 				let daysOfWeek = ['']
 				if (i18n.language == 'uz') {
 					daysOfWeek = ['YA', 'DU', 'SE', 'CH', 'PA', 'JU', 'SH'];
@@ -36,7 +37,7 @@ function Datepicker({selectedDate, setSelectedDate}: {selectedDate: Date; setSel
 		<DatePicker
 		selected={selectedDate}
 		minDate={new Date()}
-		onChange={(date) => setSelectedDate(date)}
+		onChange={(date: Date) => setSelectedDate(date)}
 		inline
 		showMonthDropdown={false}
       	showWeekNumbers={false}

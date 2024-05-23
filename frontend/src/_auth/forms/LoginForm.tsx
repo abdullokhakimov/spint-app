@@ -2,7 +2,6 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 import { LoginValidation } from "../../services/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import FormField from "../../components/ui/FormField"
 import { Link, useNavigate } from "react-router-dom"
 import { useLoginUserMutation } from "../../services/react-query/queries"
 import { useUserContext } from "../../context/AuthContext"
@@ -51,21 +50,35 @@ function LoginForm() {
 			<p className="authentication__subtitle">{t('authentication.login__subtitle')}</p>
 
 			<form onSubmit={handleSubmit(onSubmit)} className="authentication__form">
-				<FormField
-					type="text"
-					label={t('authentication.login__username')}
-					name="username"
-					register={register}
-					error={errors.username}
-				/>
+				<div className="authentication__form__field">
+					<input 
+						type="text"
+						className="authentication__form__field__input" 
+						autoComplete="off"
+						required
+						{...register("username")}
+					/>
+					<label htmlFor="" className="authentication__form__field__label">
+						{t('authentication.login__username')}
+					</label>
 
-				<FormField
-					type="password"
-					label={t('authentication.login__password')}
-					name="password"
-					register={register}
-					error={errors.password}
-				/>
+					{errors.username && <p className="authentication__form__field__error-message">{errors.username.message}</p>}
+				</div>
+				
+				<div className="authentication__form__field">
+					<input 
+						type="password"
+						className="authentication__form__field__input" 
+						autoComplete="off"
+						required
+						{...register("password")}
+					/>
+					<label htmlFor="" className="authentication__form__field__label">
+						{t('authentication.login__password')}
+					</label>
+
+					{errors.password && <p className="authentication__form__field__error-message">{errors.password.message}</p>}
+				</div>
 
 				{/* <Link to="/" className="authentication__reset-password__link">Забыли пароль?</Link> */}
 

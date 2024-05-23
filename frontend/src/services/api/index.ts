@@ -1,40 +1,40 @@
 import axios from "axios";
 import { toast } from "sonner";
-import { Facility, FacilityMapCoordinates, Game, Region, typeNewUser } from "../../types";
+import { FacilityMapCoordinates, Game, loadFacilities, Region, typeNewUser } from "../../types";
 import i18n from '../../i18n';
 
-// const localhost = 'http://127.0.0.1:8000'
 const localhost = 'http://192.168.0.102:8000'
 
-
-
-
-export async function apiCreateNewUser( user: typeNewUser ) {
+export async function apiCreateNewUser(user: typeNewUser) {
 	const config = {
-        headers: {
-            'Content-Type': 'application/json',
+		headers: {
+			'Content-Type': 'application/json',
 			'Accept-Language': `${i18n.resolvedLanguage}`
-        }
-    };
+		}
+	};
 
- 	const body = {
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        re_password: user.re_password
-    };
+	const body = {
+		username: user.username,
+		email: user.email,
+		password: user.password,
+		re_password: user.re_password
+	};
 
-    try {
-        await axios.post(`${localhost}/auth/users/`, body, config);
-		toast.success(i18n.t("toast.create__new__user__success"))
-	} catch (error){
-		let apiErrorMessage = '';
-        if (error.response && error.response.data) {
-            apiErrorMessage = Object.values(error.response.data)[0][0];
-            toast.error(apiErrorMessage);
-        } else {
-            toast.error(i18n.t("toast.create__new__user__error"));
-        }
+	try {
+		await axios.post(`${localhost}/auth/users/`, body, config);
+		toast.success(i18n.t("toast.create__new__user__success"));
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			let apiErrorMessage = '';
+			if (error.response && error.response.data) {
+				apiErrorMessage = Object.values(error.response.data)[0] as string;
+				toast.error(apiErrorMessage);
+			} else {
+				toast.error(i18n.t("toast.create__new__user__error"));
+			}
+		} else {
+			toast.error(i18n.t("toast.create__new__user__error"));
+		}
 	}
 }
 
@@ -57,13 +57,17 @@ export async function apiLoginUser( user: { username: string, password: string }
 		localStorage.setItem('access', apiLoginUserPost.data.access);
       	localStorage.setItem('refresh', apiLoginUserPost.data.refresh);
 	} catch (error) {
-		let apiErrorMessage = '';
-        if (error.response.data) {	
-            apiErrorMessage = Object.values(error.response.data)[0];
-            toast.error(apiErrorMessage);
-        } else {
-            toast.error(i18n.t("toast.login__error"));
-        }
+		if (axios.isAxiosError(error)) {
+			let apiErrorMessage = '';
+			if (error.response && error.response.data) {
+				apiErrorMessage = Object.values(error.response.data)[0] as string;
+				toast.error(apiErrorMessage);
+			} else {
+				toast.error(i18n.t("toast.login__error"));
+			}
+		} else {
+			toast.error(i18n.t("toast.login__error"));
+		}
     }
 }
 
@@ -176,7 +180,7 @@ export async function apiLoadRegions(): Promise<Region[]> {
 	}
 }
 
-export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selectedGameOption = null, selectedRegionOption = null}: { pageParam: number; searchQuery: string; selectedGameOption: Game | null; selectedRegionOption: Region | null; }): Promise<Facility[]> {
+export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selectedGameOption = null, selectedRegionOption = null}: { pageParam?: number | undefined; searchQuery: string; selectedGameOption: Game | null; selectedRegionOption: Region | null; }): Promise<loadFacilities> {
 	let facilitiesURL = `${localhost}/facilities/?page=${pageParam}&title_or_address=${searchQuery}`;
 	
 	if (selectedGameOption !== null) {
@@ -193,11 +197,13 @@ export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selec
 		}
 	};
 	try {
-		const facilitiesResponse = await axios.get<Facility[]>(facilitiesURL, config);
+		const facilitiesResponse = await axios.get(facilitiesURL, config);
+		console.log(facilitiesResponse.data);
+		
 		return facilitiesResponse.data;
 	} catch (error) {
 		toast.error(i18n.t("toast.load__facilities__error"));
-		return [];
+		return { next_page_param: undefined, results: []};
 	}
 }
 
@@ -227,7 +233,7 @@ export async function apiLoadFacilityMapCoordinates({ selectedGameOption, select
 	}
 }
 
-export async function apiLoadFacilityDetails(facilityID: string) {
+export async function apiLoadFacilityDetails(facilityID: string | undefined) {
 	const facilityDetailsURL = `${localhost}/facility/${facilityID}/`;
 	
 	const config = {
@@ -236,14 +242,9 @@ export async function apiLoadFacilityDetails(facilityID: string) {
 			'Accept-Language': `${i18n.resolvedLanguage}`
 		}
 	};
-
-	try {
-		const facilityDetailsResponse = await axios.get(facilityDetailsURL, config);
+	const facilityDetailsResponse = await axios.get(facilityDetailsURL, config);
 		
-		return facilityDetailsResponse.data;
-	} catch (error) {
-		return error;
-	}
+	return facilityDetailsResponse.data;
 }
 
 export async function apiCreateBooking({user, room, date, timeRange}: {user: number; room: number; date: string; timeRange: string[];}) {
@@ -300,7 +301,6 @@ export async function apiLoadSearchedUsers(searchQuery: string) {
 
 	try {
 		const bsearchedUsersResponse = await axios.get(searchedUsersURL, config);
-		
 		return bsearchedUsersResponse.data;
 	} catch (error) {
 		return error;
@@ -327,13 +327,15 @@ export async function apiCreateInvitation({senderID, receiverID, bookingID}: {se
         await axios.post(createInvitationURL, body, config);
 		toast.success(i18n.t("toast.invite__success"))
 	} catch (error){		
-		if (error.response.data.error) {
-            toast.error(error.response.data.error);
-        } else {
-            toast.error(i18n.t("toast.invite__error"))
-        }
-		throw error;
-		
+		if (axios.isAxiosError(error)) {
+			if (error.response && error.response.data && error.response.data.error) {
+				toast.error(error.response.data.error);
+			} else {
+				toast.error(i18n.t("toast.invite__error"));
+			}
+		} else {
+			toast.error(i18n.t("toast.invite__error"));
+		}		
 	}
 }
 
@@ -355,7 +357,7 @@ export async function apiLoadNotifications(userID: number) {
 	}
 }
 
-export async function apiAcceptInvitation({invitationID}: {invitationID: string}) {
+export async function apiAcceptInvitation({invitationID}: {invitationID: number}) {
 	const acceptInvitationURL = `${localhost}/invitations/${invitationID}/`;
 	
 	const config = {
@@ -373,7 +375,7 @@ export async function apiAcceptInvitation({invitationID}: {invitationID: string}
 	}
 }
 
-export async function apiRejectInvitation({invitationID}: {invitationID: string}) {
+export async function apiRejectInvitation({invitationID}: {invitationID: number}) {
 	const rejectInvitationURL = `${localhost}/invitations/${invitationID}/`;
 	
 	const config = {

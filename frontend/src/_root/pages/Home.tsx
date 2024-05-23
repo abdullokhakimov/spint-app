@@ -2,15 +2,16 @@ import { useState } from "react";
 import FacilityList from "../../components/shared/FacilityList";
 import Maps from "../../components/parts/Maps";
 import { useTranslation } from "react-i18next";
+import { Game, Region } from "../../types";
 
 
 function Home() {
 	const { t } = useTranslation();
 
-	const [selectedGameOption, setSelectedGameOption] = useState(null);
-	const [selectedRegionOption, setSelectedRegionOption] = useState(null);
+	const [selectedGameOption, setSelectedGameOption] = useState<Game | null>(null);
+	const [selectedRegionOption, setSelectedRegionOption] = useState<Region | null>(null);
 
-	const [showMapOnMobile, setShowMapOnMobile] = useState(false);
+	const [showMapOnMobile, setShowMapOnMobile] = useState<boolean>(false);
 
 	return(
 		<section className="home-wrapper">

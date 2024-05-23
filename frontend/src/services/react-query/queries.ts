@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apiAcceptInvitation, apiCreateBooking, apiCreateInvitation, apiCreateNewUser, apiExcludeInvitation, apiLoadBookings, apiLoadFacilities, apiLoadFacilityDetails, apiLoadFacilityMapCoordinates, apiLoadGames, apiLoadNotifications, apiLoadRegions, apiLoadSearchedUsers, apiLoginUser, apiRejectInvitation, apiVerifyNewUser } from "../api";
-import { FacilityDetails, FacilityMapCoordinates, FilteredBooking, Game, Region, typeNewUser, typeUser } from "../../types";
+import { FacilityDetails, FacilityMapCoordinates, FilteredBooking, Game, loadFacilities, Notification, Region, typeNewUser, typeUser } from "../../types";
 
 export const useCreateNewUserMutation = () => {
 	return useMutation({
@@ -35,16 +35,13 @@ export const useLoadRegionsQuery = () => {
 };
 
 export const useLoadFacilitiesInfiniteQuery = ({searchQuery, selectedGameOption, selectedRegionOption}: { searchQuery: string; selectedGameOption: Game | null; selectedRegionOption: Region | null; }) => {
-	const fetchFacilities = ({ pageParam = 1 }) => {
-		return apiLoadFacilities({ pageParam, searchQuery, selectedGameOption, selectedRegionOption });
-    };
-	
-	return useInfiniteQuery({
-		queryKey: ['facilities', searchQuery, selectedGameOption, selectedRegionOption],
-		getNextPageParam: (lastPage) => lastPage.next_page_param,
-		queryFn: fetchFacilities,
-		retry: 1,
-	});
+    return useInfiniteQuery<loadFacilities, Error>({
+        queryKey: ['facilities', searchQuery, selectedGameOption, selectedRegionOption],
+        queryFn: ({ pageParam = 1 }) => apiLoadFacilities({ pageParam: pageParam as number, searchQuery, selectedGameOption, selectedRegionOption }),
+        getNextPageParam: (lastPage) => lastPage.next_page_param,
+        initialPageParam: 1,
+        retry: 1,
+    });
 };
 
 export const useLoadFacilityMapCoordinatesQuery = ({selectedGameOption, selectedRegionOption}: { selectedGameOption: Game | null; selectedRegionOption: Region | null; }) => {
@@ -54,8 +51,8 @@ export const useLoadFacilityMapCoordinatesQuery = ({selectedGameOption, selected
 	});
 };
 
-export const useLoadFacilityDetailsQuery = ({ id }: { id: string }) => {
-    return useQuery<FacilityDetails[], Error>({
+export const useLoadFacilityDetailsQuery = ({ id }: { id: string | undefined}) => {
+    return useQuery<FacilityDetails, Error>({
         queryKey: ['facilityDetails', id],
         queryFn: () => apiLoadFacilityDetails(id),
     });
@@ -71,6 +68,7 @@ export const useLoadBookingsQuery = ({ id }: { id: number }) => {
     return useQuery<FilteredBooking[], Error>({
         queryKey: ['bookings', id],
         queryFn: () => apiLoadBookings(id),
+		refetchOnWindowFocus: false,
     });
 };
 
@@ -91,18 +89,19 @@ export const useLoadNotificationsQuery = ({ id }: { id: number }) => {
     return useQuery<Notification[], Error>({
         queryKey: ['notifications', id],
         queryFn: () => apiLoadNotifications(id),
+		refetchOnWindowFocus: false,
     });
 };
 
 export const useAcceptInvitationMutation = () => {
 	return useMutation({
-		mutationFn: ({invitationID}: {invitationID: string;}) =>  apiAcceptInvitation({ invitationID })
+		mutationFn: ({invitationID}: {invitationID: number;}) =>  apiAcceptInvitation({ invitationID })
 	});
 }
 
 export const useRejectInvitationMutation = () => {
 	return useMutation({
-		mutationFn: ({invitationID}: {invitationID: string;}) =>  apiRejectInvitation({ invitationID })
+		mutationFn: ({invitationID}: {invitationID: number;}) =>  apiRejectInvitation({ invitationID })
 	});
 }
 

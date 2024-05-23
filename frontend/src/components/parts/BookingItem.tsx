@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 import { formatDate, getNextHour, hideEmail } from "../../utils";
 import Modal from "../ui/Modal";
 import debounce from 'lodash.debounce';
-import { useCreateInvitationMutation, useExcludeInvitationMutation, useLoadSearchedUsersQuery } from "../../services/react-query/queries";
+import { useCreateInvitationMutation, useExcludeInvitationMutation, useLoadBookingsQuery, useLoadSearchedUsersQuery } from "../../services/react-query/queries";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useUserContext } from "../../context/AuthContext";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import BookingSearchUsersSkeleton from "./BookingSearchUsersSkeleton";
 
-function BookingItem ({ booking, refetchBookings }: { booking: FilteredBooking[]; refetchBookings?: () => Promise<void>; }) {
+function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 	const { t } = useTranslation();
     
 	const { user } = useUserContext();
@@ -20,7 +21,8 @@ function BookingItem ({ booking, refetchBookings }: { booking: FilteredBooking[]
 	const [searchQuery, setSearchQuery] = useState('');
 	const debouncedSearch = debounce(setSearchQuery, 700);
 	
-	const { data: searchedUsers, isLoading } = useLoadSearchedUsersQuery({ searchQuery })
+	const { refetch: refetchBookings } = useLoadBookingsQuery({ id: user.id });
+	const { data: searchedUsers, isLoading: isLoadingSearchedUsers } = useLoadSearchedUsersQuery({ searchQuery })
 	
 	const [isCopied, setCopied] = useState(false);
 
@@ -236,7 +238,9 @@ function BookingItem ({ booking, refetchBookings }: { booking: FilteredBooking[]
 								</li>
 							))
 						) : searchQuery !== '' ? (
-							searchedUsers?.length > 0 ? (
+							isLoadingSearchedUsers == true ? (
+								<BookingSearchUsersSkeleton items={4}/>
+							) : searchedUsers !== undefined && searchedUsers.length > 0 && isLoadingSearchedUsers == false ? (
 								searchedUsers.map((searchedUser, index) => (
 									searchedUser.id == user.id ? (
 										null

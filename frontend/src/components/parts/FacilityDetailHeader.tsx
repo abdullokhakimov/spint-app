@@ -4,7 +4,7 @@ import { Game } from '../../types';
 import { convertSvgToHtml } from '../../utils';
 import { useEffect, useState } from 'react';
 
-function FacilityDetailHeader({ title, image_url, game }: { title: string; image_url: string; game: Game[]}) {
+function FacilityDetailHeader({ title, image_url, game }: { title: string; image_url: string; game: Game}) {
 	const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {

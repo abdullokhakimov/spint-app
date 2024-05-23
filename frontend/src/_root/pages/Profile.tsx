@@ -4,6 +4,7 @@ import { useUserContext } from "../../context/AuthContext";
 import '../../styles/Profile.css'
 import Modal from "../../components/ui/Modal";
 import { useTranslation } from "react-i18next";
+import { Languages } from "../../types";
 
 
 function Profile() {
@@ -130,8 +131,8 @@ function Profile() {
 							<path d="M2.75 14.6667V13.75C8.10333 15.5375 13.8967 15.5375 19.25 13.75V14.6667" stroke="#242424" strokeWidth="1.5"/>
 							<path d="M2.75 8.25029C8.10333 6.46279 13.8967 6.46279 19.25 8.25029" stroke="#242424" strokeWidth="1.5"/>
 						</svg>
-
-						<span>{lngs[i18n.resolvedLanguage].nativeName}</span>
+						
+						<span>{lngs[i18n.resolvedLanguage as keyof Languages].nativeName}</span>
 					</div>
 
 					<svg className="profile__languages__button__arrow" width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -143,7 +144,7 @@ function Profile() {
 					<div className="profile__language__modal">
 						{Object.keys(lngs).map((lng, index) => (
 							<button key={index} className="profile__language__modal__button" type="submit" onClick={() => i18n.changeLanguage(lng)}>
-								{lngs[lng].nativeName}
+								{lngs[lng as keyof Languages].nativeName}
 							</button>
 						))}
 					</div>

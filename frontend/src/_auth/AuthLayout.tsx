@@ -2,13 +2,13 @@ import { Outlet, Navigate } from "react-router-dom"
 import '../styles/Authentication.css'
 import { useTranslation } from "react-i18next";
 import { useUserContext } from "../context/AuthContext";
-
+import { Languages } from "../types/index"
 
 function AuthLayout() {
 	const { isAuthenticated } = useUserContext();
 
 	const { i18n } = useTranslation();
-	const lngs = {
+	const lngs: Languages = {
 		ru: { nativeName: 'Русский' },
 		uz: { nativeName: "O'zbekcha" }
 	};
@@ -65,7 +65,7 @@ function AuthLayout() {
 						<div className="authentication__lang">
 							{Object.keys(lngs).map((lng) => (
 								<button className={`authentication__lang__button ${i18n.resolvedLanguage === lng ? 'selected' : null}`} key={lng} type="submit" onClick={() => i18n.changeLanguage(lng)}>
-									{lngs[lng].nativeName}
+									{lngs[lng as keyof Languages].nativeName}
 								</button>
 							))}
 						</div>

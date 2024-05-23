@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { FieldError, UseFormRegister } from "react-hook-form";
 import i18n from '../../i18n';
 
 const passwordSchema = z.string()
@@ -33,30 +32,3 @@ export const LoginValidation = z
 		username: z.string(),
 		password: z.string(),
 	})
-
-export type SignupFormData = {
-  username: string;
-  email: string; // Required for signup
-  password: string;
-  re_password: string; // Required for signup
-};
-
-export type LoginFormData = {
-  username: string;
-  password: string;
-};
-
-export type FormFieldProps<T extends SignupFormData | LoginFormData> = {
-  type: string;
-  label: string;
-  name: ValidFieldNames;
-  register: UseFormRegister<T>;
-  error: FieldError | undefined;
-};
-  
-
-export type ValidFieldNames =
-| "username"
-| "email"
-| "password"
-| "re_password";
