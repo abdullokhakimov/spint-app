@@ -3,7 +3,8 @@ import { toast } from "sonner";
 import { FacilityMapCoordinates, Game, loadFacilities, Region, typeNewUser } from "../../types";
 import i18n from '../../i18n';
 
-const localhost = 'http://spint.uz/api'
+const localhost = 'https://spint.uz/api'
+
 
 export async function apiCreateNewUser(user: typeNewUser) {
 	const config = {
