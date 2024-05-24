@@ -199,7 +199,7 @@ class InvitationViewSet(viewsets.ModelViewSet):
         notification = Notification.objects.create(
             type='invite_user_action',
             receiver=receiver,
-            message_ru=f"Вы были приглашены в игру пользователем {sender.username} в <a href='/facility/{booking.room.facility.id}'>{booking.room.facility.title} {booking.room.title}</a> {booking.date.strftime("%d %B %Y г.")} {get_consecutive_booking_times(booking.date, booking.user, booking.room)}",
+            message_ru=f"Вы были приглашены в игру пользователем {sender.username} в <a href='/facility/{booking.room.facility.id}'>{booking.room.facility.title} {booking.room.title}</a> {booking.date.strftime('%d %B %Y г.')} {get_consecutive_booking_times(booking.date, booking.user, booking.room)}",
             message_uz=f"{sender.username} sizni {format_date(booking.date, 'd MMMM y', locale='uz')} yil {get_consecutive_booking_times(booking.date, booking.user, booking.room)} gachan <a href='/facility/{booking.room.facility.id}'>{booking.room.facility.title} {booking.room.title}</a> ga oʻyinga taklif qildi",
             invitation=invitation
         )

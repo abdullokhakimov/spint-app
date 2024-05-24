@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import AuthLayout from './_auth/AuthLayout'
 import { LoginForm, SignupForm, ActivateForm } from './_auth/forms'
 import RootLayout from './_root/RootLayout'
-import { Home, Notifications, Bookings, Profile, Teams, FacilityDetail, NotFound } from './_root/pages'
+import { Home, Notifications, Bookings, Profile, Teams, FacilityDetail } from './_root/pages'
 import { Toaster } from 'sonner'
 
 function App() {
@@ -25,8 +25,8 @@ function App() {
 					<Route path="/notifications" element={<Notifications/>}/>
 				</Route>
 					
-				<Route path="*" element={<NotFound/>}/>
-				<Route path="/404" element={<NotFound/>}/>
+				
+						
 			</Routes>
 
 			<Toaster position="top-right" expand={false} richColors/>

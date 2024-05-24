@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-*h-2mqh0v$4kh#(!)=jqb*^y#&$$#f^at+^ns%uxlb@nmtg#r(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost']
 
 
 CLOUDINARY_STORAGE = {
@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
-	'corsheaders',
+    'corsheaders',
     'rest_framework',
     'djoser',
     'accounts.apps.AccountsConfig',
@@ -69,9 +69,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+ #   'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-	'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -146,13 +147,20 @@ USE_I18N = True
 USE_TZ = True
 
 
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/spint-app/backend/spint/static'
+STATIFILES_DIRS = [
+	'/var/www/spint-app/backend/venv/lib/python3.10/site-packages/django/contrib/admin/static/admin/css/forms.css',
+]
 
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
