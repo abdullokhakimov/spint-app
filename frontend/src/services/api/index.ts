@@ -5,6 +5,7 @@ import i18n from '../../i18n';
 
 const localhost = 'https://spint.uz/api'
 
+
 export async function apiCreateNewUser(user: typeNewUser) {
 	const config = {
 		headers: {

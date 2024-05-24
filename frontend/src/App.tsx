@@ -25,8 +25,6 @@ function App() {
 					<Route path="/notifications" element={<Notifications/>}/>
 				</Route>
 					
-				
-						
 			</Routes>
 
 			<Toaster position="top-right" expand={false} richColors/>

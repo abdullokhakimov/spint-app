@@ -12,7 +12,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from .filters import FacilitySearchFilter, BookingFilter, UserSearchFilter, NotificationFilter
 from .models import Facility, Region, Game, Benefit, Room, Booking, Invitation, Notification
-from .serializers import RegionSerializer, BookingSerializer, GameSerializer, BenefitSerializer, FacilityListSerializer, \
+from .serializers import RegionSerializer, BookingSerializer, GameSerializer, BenefitSerializer, ListSerializer, \
     FacilityDetailSerializer, FacilityMapCoordinatesListSerializer, RoomSerializer, FilteredBookingSerializer, \
     InvitationSerializer, NotificationSerializer
 from django.utils.translation import get_language
