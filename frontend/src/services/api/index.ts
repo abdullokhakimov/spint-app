@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { FacilityMapCoordinates, Game, loadFacilities, Region, typeNewUser } from "../../types";
 import i18n from '../../i18n';
 
-const localhost = 'http://192.168.0.102:8000'
+const localhost = 'http://spint.uz/api'
 
 export async function apiCreateNewUser(user: typeNewUser) {
 	const config = {
@@ -144,7 +144,7 @@ export async function apiCheckAuthenticated(){
 }
 
 export async function apiLoadGames(): Promise<Game[]> {
-	const gamesURL = `${localhost}/games`;
+	const gamesURL = `${localhost}/api/games/`;
 	
 	const config = {
 		headers: {
@@ -163,17 +163,21 @@ export async function apiLoadGames(): Promise<Game[]> {
 }
 
 export async function apiLoadRegions(): Promise<Region[]> {
-	const regionsURL = `${localhost}/regions`;
+	const regionsURL = `${localhost}/api/regions/`;
+	console.log(regionsURL);
 	
 	const config = {
 		headers: {
 			'Content-Type': 'application/json',
-			'Accept-Language': `${i18n.resolvedLanguage}`
+			'Accept-Language': `${i18n.resolvedLanguage}`,
 		}
 	};
 	try {
 		const regionsResponse = await axios.get<Region[]>(regionsURL, config);
+		console.log(regionsResponse);
+
 		return regionsResponse.data;
+		
 	} catch (error) {
 		toast.error(i18n.t("toast.load__regions__error"));
 		throw new Error(i18n.t("toast.load__regions__error"));
@@ -181,7 +185,7 @@ export async function apiLoadRegions(): Promise<Region[]> {
 }
 
 export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selectedGameOption = null, selectedRegionOption = null}: { pageParam?: number | undefined; searchQuery: string; selectedGameOption: Game | null; selectedRegionOption: Region | null; }): Promise<loadFacilities> {
-	let facilitiesURL = `${localhost}/facilities/?page=${pageParam}&title_or_address=${searchQuery}`;
+	let facilitiesURL = `${localhost}/api/facilities/?page=${pageParam}&title_or_address=${searchQuery}/`;
 	
 	if (selectedGameOption !== null) {
 		facilitiesURL += `&facility_game_id=${selectedGameOption.id}`;
@@ -208,7 +212,7 @@ export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selec
 }
 
 export async function apiLoadFacilityMapCoordinates({ selectedGameOption, selectedRegionOption}: { selectedGameOption: Game | null; selectedRegionOption: Region | null; }): Promise<FacilityMapCoordinates[]> {
-	let facilityMapCoordinatesURL = `${localhost}/facilities-map-coordinates/?title_or_address=`;
+	let facilityMapCoordinatesURL = `${localhost}/api/facilities-map-coordinates/?title_or_address=`;
 	
 	if (selectedGameOption !== null) {
 		facilityMapCoordinatesURL += `&facility_game_id=${selectedGameOption.id}`;
@@ -234,7 +238,7 @@ export async function apiLoadFacilityMapCoordinates({ selectedGameOption, select
 }
 
 export async function apiLoadFacilityDetails(facilityID: string | undefined) {
-	const facilityDetailsURL = `${localhost}/facility/${facilityID}/`;
+	const facilityDetailsURL = `${localhost}/api/facility/${facilityID}/`;
 	
 	const config = {
 		headers: {
@@ -248,7 +252,7 @@ export async function apiLoadFacilityDetails(facilityID: string | undefined) {
 }
 
 export async function apiCreateBooking({user, room, date, timeRange}: {user: number; room: number; date: string; timeRange: string[];}) {
-	const createBookingURL = `${localhost}/bookings/`;
+	const createBookingURL = `${localhost}/api/bookings/`;
 
 	const config = {
 		headers: {
@@ -272,7 +276,7 @@ export async function apiCreateBooking({user, room, date, timeRange}: {user: num
 }
 
 export async function apiLoadBookings(userID: number) {
-	const bookingsURL = `${localhost}/bookings/?user=${userID}`;
+	const bookingsURL = `${localhost}/api/bookings/?user=${userID}`;
 	
 	const config = {
 		headers: {
@@ -290,7 +294,7 @@ export async function apiLoadBookings(userID: number) {
 }
 
 export async function apiLoadSearchedUsers(searchQuery: string) {
-	const searchedUsersURL = `${localhost}/users/?username=${searchQuery}`;
+	const searchedUsersURL = `${localhost}/api/users/?username=${searchQuery}`;
 	
 	const config = {
 		headers: {
@@ -308,7 +312,7 @@ export async function apiLoadSearchedUsers(searchQuery: string) {
 }
 
 export async function apiCreateInvitation({senderID, receiverID, bookingID}: {senderID: number; receiverID: number; bookingID: number;}) {
-	const createInvitationURL = `${localhost}/invitations/`;
+	const createInvitationURL = `${localhost}/api/invitations/`;
 
 	const config = {
 		headers: {
@@ -340,7 +344,7 @@ export async function apiCreateInvitation({senderID, receiverID, bookingID}: {se
 }
 
 export async function apiLoadNotifications(userID: number) {
-	const notificationsURL = `${localhost}/notifications/?receiver=${userID}`;
+	const notificationsURL = `${localhost}/api/notifications/?receiver=${userID}`;
 	
 	const config = {
 		headers: {
@@ -358,7 +362,7 @@ export async function apiLoadNotifications(userID: number) {
 }
 
 export async function apiAcceptInvitation({invitationID}: {invitationID: number}) {
-	const acceptInvitationURL = `${localhost}/invitations/${invitationID}/`;
+	const acceptInvitationURL = `${localhost}/api/invitations/${invitationID}/`;
 	
 	const config = {
 		headers: {
@@ -376,7 +380,7 @@ export async function apiAcceptInvitation({invitationID}: {invitationID: number}
 }
 
 export async function apiRejectInvitation({invitationID}: {invitationID: number}) {
-	const rejectInvitationURL = `${localhost}/invitations/${invitationID}/`;
+	const rejectInvitationURL = `${localhost}/api/invitations/${invitationID}/`;
 	
 	const config = {
 		headers: {
@@ -394,7 +398,7 @@ export async function apiRejectInvitation({invitationID}: {invitationID: number}
 }
 
 export async function apiExcludeInvitation({ bookingID, excludeUserID }: { bookingID: number; excludeUserID: number; }) {
-	const rejectInvitationURL = `${localhost}/bookings/${bookingID}/exclude_user/`;
+	const rejectInvitationURL = `${localhost}/api/bookings/${bookingID}/exclude_user/`;
 	
 	const config = {
 		headers: {

@@ -19,7 +19,9 @@ function ActivateForm() {
     }
 
 	useEffect(() => {
-		navigate('/login');
+		if (onVerifyNewUserSuccess) {
+			navigate('/login');
+		}
 	}, [ onVerifyNewUserSuccess ] );
 
 	return(
