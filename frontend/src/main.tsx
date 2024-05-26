@@ -7,15 +7,18 @@ import { BrowserRouter } from 'react-router-dom'
 import { QueryProvider } from './services/react-query/queryProvider.tsx'
 import AuthProvider from './context/AuthContext.tsx'
 import { SkeletonTheme } from 'react-loading-skeleton'
+import { HelmetProvider } from 'react-helmet-async';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<SkeletonTheme baseColor="#F4F4F4" highlightColor="#fff">
-		<BrowserRouter>
-			<QueryProvider>
-				<AuthProvider>
-					<App />		
-				</AuthProvider>
-			</QueryProvider>
-		</BrowserRouter>
+		<HelmetProvider>
+			<BrowserRouter>
+				<QueryProvider>
+					<AuthProvider>
+						<App />		
+					</AuthProvider>
+				</QueryProvider>
+			</BrowserRouter>
+		</HelmetProvider>	
 	</SkeletonTheme>
 )

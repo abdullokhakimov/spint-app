@@ -5,6 +5,7 @@ import '../../styles/Profile.css'
 import Modal from "../../components/ui/Modal";
 import { useTranslation } from "react-i18next";
 import { Languages } from "../../types";
+import { Helmet } from "react-helmet-async";
 
 
 function Profile() {
@@ -22,6 +23,12 @@ function Profile() {
 	
 	return isAuthenticated == true ? (
 		<section className="profile">
+			<Helmet>
+				<title>{t('helmet.teams.title')}</title>
+				<meta name="description" content={t("helmet.teams.meta__description")} />
+				<link rel="canonical" href="https://www.spint.uz/teams" />
+			</Helmet> 
+
 			<h3 className="profile__title">{t("profile.title")}</h3>
 
 			<div className="profile__logo">
@@ -162,7 +169,15 @@ function Profile() {
 			</button>
 		</section>
 	) : (
-		<NotLoggedIn/>
+		<>
+			<Helmet>
+				<title>{t('helmet.profile.title')}</title>
+				<meta name="description" content={t("helmet.profile.meta__description")} />
+				<link rel="canonical" href="/profile" />
+			</Helmet>
+
+			<NotLoggedIn/>
+		</>
 	)
 }
  

@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useVerifyNewUserMutation } from '../../services/react-query/queries';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 
 function ActivateForm() {
 	const { t } = useTranslation();
@@ -26,6 +27,10 @@ function ActivateForm() {
 
 	return(
 		<div className="authentication__content">
+			<Helmet>
+				<meta name='robots' content='noindex'/>
+			</Helmet>
+
 			<h1 className="authentication__title">{t('authentication.activation__title')}</h1>
 
 			<p className="authentication__subtitle">{t('authentication.activation__subtitle')}</p>

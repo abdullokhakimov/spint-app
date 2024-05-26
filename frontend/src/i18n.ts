@@ -81,7 +81,7 @@ i18n
 				},
 				teams: {
 					title: "Скоро!",
-					subtitle: "Эта часть сайта в данное время находиться в стадии разработки. Просим вас ожидать и благодарим за термение"
+					subtitle: "Эта часть сайта в данное время находиться в стадии разработки. Просим вас ожидать и благодарим за терпение"
 				},
 				notfound: {
 					title: "Страница не найдена",
@@ -172,6 +172,24 @@ i18n
 					password__number: "Пароль должен содержать хотя бы одну цифру",
 					password__email: "Неправильная электронная почта",
 					password__match: "Пароли не совподают",
+				},
+				helmet: {
+					home: {
+						title: "Spint - Найдите и забронируйте спортивные объекты рядом",
+						meta__description: "Найдите и забронируйте спортивные объекты рядом с вами. Футбольные поля, теннисные корты, баскетбольные площадки и спортзалы - всё это доступно для бронирования в Spint: футбольные поля, баскетбольные площадки, теннисные корты, плавательные бассейны, настольый теннис, бильярд, воллейбольные плошадки, бовлинг",
+					},
+					teams: {
+						title: "Команды",
+						meta__description: "Создайте свою команду и приглашайте своих друзей в игру",
+					},
+					bookings: {
+						title: "Мои Брони",
+						meta__description: "Смотрите полную информацию и историю своих броней",
+					},
+					profile: {
+						title: "Мой профиль",
+						meta__description: "Смотрите полную информацию о своём профиле",
+					},
 				},
 				others: {
 					loading: 'Загрузка...',
@@ -338,6 +356,24 @@ i18n
 					password__number: "Parolda kamida bitta raqam bo'lishi kerak",
 					password__email: "Noto'g'ri elektron pochta",
 					password__match: "Parollar mos kelmayapti",
+				},
+				helmet: {
+					home: {
+						title: "Spint - Yaqin sport inshootlarini toping va bron qiling",
+						meta__description: "O'zingizga yaqin sport inshootlarini toping va bron qiling. Futbol maydonlari, tennis kortlari, basketbol maydonchalari va sport zallarini Spintda bron qilish mumkin: : futbol maydonlari, basketbol maydonchalari, tennis kortlari, basseynlar, stol tennisi, bilyard, voleybol maydonlari, bouling",
+					},
+					teams: {
+						title: "Jamoalar",
+						meta__description: "O'zinginzni jamoangizni yarating va do'stlaringizni oyinga chaqiring",
+					},
+					bookings: {
+						title: "Mening Bandlovlarim",
+						meta__description: "To'liq ma'lumot va bandlovlaringiz tarixini ko'ring",
+					},
+					profile: {
+						title: "Mening Profilim",
+						meta__description: "O'zingizni profilingiz haqida to'liq ma'lumotni ko'ring",
+					},
 				},
 				others: {
 					loading: 'Yuklanmoqda...',

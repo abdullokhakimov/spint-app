@@ -3,6 +3,7 @@ import FacilityList from "../../components/shared/FacilityList";
 import Maps from "../../components/parts/Maps";
 import { useTranslation } from "react-i18next";
 import { Game, Region } from "../../types";
+import { Helmet } from "react-helmet-async";
 
 
 function Home() {
@@ -15,6 +16,12 @@ function Home() {
 
 	return(
 		<section className="home-wrapper">
+			<Helmet>
+				<title>{t('helmet.home.title')}</title>
+				<meta name="description" content={t("helmet.home.meta__description")} />
+				<link rel="canonical" href="" />
+			</Helmet>
+
 			<FacilityList 
 				selectedGameOption={selectedGameOption}
 				setSelectedGameOption={setSelectedGameOption}

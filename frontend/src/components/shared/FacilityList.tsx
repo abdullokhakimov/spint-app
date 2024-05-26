@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FacilityFilters, FacilityItem, FacilitySearch, HomeNews } from "../parts"
+import { FacilityFilters, FacilityItem, FacilitySearch } from "../parts"
 import FacilityItemSkeleton from "../parts/FacilityItemSkeleton";
 import { useLoadFacilitiesInfiniteQuery, useLoadGamesQuery, useLoadRegionsQuery } from "../../services/react-query/queries";
 import { useInView } from "react-intersection-observer";
@@ -43,7 +43,7 @@ const FacilityList: React.FC<FacilityListProps> = ({selectedGameOption, setSelec
 				/>
 			</section>
 
-			<HomeNews/>
+			{/* <HomeNews/> */}
 
 			<section className="facilities">
 				<h3 className="facilities__title">{t("home.facility__list.facilities__title")}</h3>

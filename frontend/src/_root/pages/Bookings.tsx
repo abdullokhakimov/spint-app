@@ -6,6 +6,7 @@ import { useLoadBookingsQuery } from "../../services/react-query/queries";
 import '../../styles/Bookings.css'
 import { sortOwnerBookings, sortUserBookings } from "../../utils";
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
 
 function Bookings() {
 	const { t } = useTranslation();
@@ -19,6 +20,12 @@ function Bookings() {
         if (isLoadingBookings) {
             content = 
 				<section className="bookings">
+					<Helmet>
+						<title>{t('helmet.bookings.title')}</title>
+						<meta name="description" content={t("helmet.bookings.meta__description")} />
+						<link rel="canonical" href="https://www.spint.uz" />
+					</Helmet>
+
                     <h3 className="bookings__title">Брони</h3>
                     <ul className="bookings__list__skeleton">
 						<Skeleton count={6} className="bookings__list__item__skeleton"/>
@@ -30,6 +37,12 @@ function Bookings() {
 				
 				content = (
 					<section className="bookings">
+						<Helmet>
+							<title>{t('helmet.bookings.title')}</title>
+							<meta name="description" content={t("helmet.bookings.meta__description")} />
+							<link rel="canonical" href="/bookings" />
+						</Helmet>
+
 						<h3 className="bookings__title">{t("bookings.owner__title")}</h3>
 						<ul className="bookings__list">
 							{sortedBookings.map((booking, index) => (
@@ -43,6 +56,12 @@ function Bookings() {
 				
 				content = (
 					<section className="bookings">
+						<Helmet>
+							<title>{t('helmet.bookings.title')}</title>
+							<meta name="description" content={t("helmet.bookings.meta__description")} />
+							<link rel="canonical" href="https://www.spint.uz" />
+						</Helmet>
+
 						<h3 className="bookings__title">{t("bookings.user__title")}</h3>
 						<ul className="bookings__list">
 							{sortedBookings.map((booking, index) => (
@@ -54,6 +73,12 @@ function Bookings() {
 			}
         } else {
             content = 	<div className="bookings__noresult">
+							<Helmet>
+								<title>{t('helmet.bookings.title')}</title>
+								<meta name="description" content={t("helmet.bookings.meta__description")} />
+								<link rel="canonical" href="https://www.spint.uz" />
+							</Helmet>
+
 							<img src="/assets/images/no-results-img.png" alt="" />
 
 							<h3>{t("bookings.noresult.title")}</h3>
