@@ -17,6 +17,7 @@ Django==5.0.4
 django-cloudinary-storage==0.3.0
 django-cors-headers==4.3.1
 django-filter==24.2
+django-jazzmin==3.0.0
 django-modeltranslation==0.18.11
 django-templated-mail==1.1.1
 django-timezone-field==6.1.0
