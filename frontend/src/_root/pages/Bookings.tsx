@@ -87,7 +87,16 @@ function Bookings() {
 						</div>;
         }
     } else {
-        content = <NotLoggedIn />;
+        content = 
+			<>
+				<Helmet>
+					<title>{t('helmet.bookings.title')}</title>
+					<meta name="description" content={t("helmet.bookings.meta__description")} />
+					<link rel="canonical" href="https://www.spint.uz" />
+				</Helmet>
+
+				<NotLoggedIn />
+			</>;
     }
 
     return content;
