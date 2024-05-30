@@ -5,7 +5,7 @@ import Timepicker from "../parts/Timepicker"
 import Benefits from "../parts/Benefits";
 import FacilityDetailBook from "../parts/FacilityDetailBook";
 
-function FacilityDetailRoom({room, startTime, endTime}: {room: Room; startTime: string; endTime: string;}) {
+function FacilityDetailRoom({room, startTime, endTime, facilityTitle}: {room: Room; startTime: string; endTime: string; facilityTitle: string;}) {
 
 	const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTimeRange, setSelectedTimeRange] = useState<string[]>([]);
@@ -26,7 +26,7 @@ function FacilityDetailRoom({room, startTime, endTime}: {room: Room; startTime: 
 
 			<Benefits benefits={room.benefits}/>
 
-			<FacilityDetailBook selectedDate={selectedDate} selectedTimeRange={selectedTimeRange} roomPrice={room.price} roomID={room.id}/>
+			<FacilityDetailBook selectedDate={selectedDate} selectedTimeRange={selectedTimeRange} roomPrice={room.price} roomID={room.id} facilityTitle={facilityTitle} roomTitle={room.title}/>
 		</>
 	)
 }

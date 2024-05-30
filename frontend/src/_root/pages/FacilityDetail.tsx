@@ -44,7 +44,7 @@ function FacilityDetail() {
 
 							<RoomTabs selectedRoomID={selectedRoom?.id} onSelectRoom={setSelectedRoom} rooms={facilityDetails.rooms} />
 
-							{selectedRoom && <FacilityDetailRoom room={selectedRoom} startTime={facilityDetails.start_time} endTime={facilityDetails.end_time}/>}
+							{selectedRoom && <FacilityDetailRoom room={selectedRoom} startTime={facilityDetails.start_time} endTime={facilityDetails.end_time} facilityTitle={facilityDetails.title}/>}
 						
 							<FacilityDetailsLocation address={facilityDetails.address} address_url={facilityDetails.address_url}/>
 						</div>

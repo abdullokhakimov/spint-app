@@ -539,6 +539,108 @@
 /* REVIEWS END */
 
 
+/* CHECKOUT */
+.facility-details__ckeckout__payment-type,
+.facility-details__ckeckout__payment-option{
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	width: 100%;
+}
+.facility-details__ckeckout__payment-option__title,
+.facility-details__ckeckout__payment-type__title,
+.facility-details__ckeckout__booking-info__title {
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--black);
+
+}
+.facility-details__ckeckout__payment-option__list,
+.facility-details__ckeckout__payment-type__list {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	overflow-x: scroll;
+}
+.facility-details__ckeckout__payment-option__list::-webkit-scrollbar {
+	display: none;
+}
+.facility-details__ckeckout__payment-option__item,
+.facility-details__ckeckout__payment-type__item {
+	width: 100%;
+	padding: 15px 20px;
+	border: 1.5px solid var(--grey-light);
+	border-radius: 14px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	cursor: pointer;
+	transition: 0.1s;
+}
+.facility-details__ckeckout__payment-option__item{
+	width: 136px;
+	align-items: start;
+	justify-content: center;
+}
+.facility-details__ckeckout__payment-option__item.disabled{
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+.facility-details__ckeckout__payment-option__item.active,
+.facility-details__ckeckout__payment-type__item.active{
+	border: 1.5px solid var(--blue);
+	background-color: #F9FBFE;
+}
+.facility-details__ckeckout__payment-option__item__title,
+.facility-details__ckeckout__payment-type__item__title{
+	width: 100px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--black);
+	white-space: nowrap;
+}
+.facility-details__ckeckout__payment-type__item__subtitle {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--grey);
+}
+.facility-details__ckeckout__payment-option__item svg, 
+.facility-details__ckeckout__payment-option__item img{
+	height: 22px;
+}
+.facility-details__ckeckout__booking-info {
+	width: 100%;
+	padding: 20px;
+	background-color: #F9FBFE;
+	border-radius: 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.facility-details__ckeckout__booking-info__title {
+	margin-bottom: 5px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.facility-details__ckeckout__booking-info__date,
+.facility-details__ckeckout__booking-info__time {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.facility-details__ckeckout__booking-info__date span,
+.facility-details__ckeckout__booking-info__time span{
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--grey);
+}
+
+/* CHECKOUT END */
+
 @media (max-width: 500px) {
 	.facility-details-wrap,
 	.facility-details__skeleton {
@@ -773,6 +875,10 @@
 		width: calc(100% - 30px);
 		padding: 13px 15px;
 		margin: 0 auto 10px auto;
+	}
+	.facility-details__pay__submit{
+		margin: 0;
+		width: 100%;
 	}
 	.facility-details__bron__submit__text,
 	.facility-details__bron__submit__price {

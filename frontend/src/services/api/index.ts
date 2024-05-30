@@ -165,7 +165,6 @@ export async function apiLoadGames(): Promise<Game[]> {
 
 export async function apiLoadRegions(): Promise<Region[]> {
 	const regionsURL = `${localhost}/api/regions/`;
-	console.log(regionsURL);
 	
 	const config = {
 		headers: {
@@ -175,7 +174,6 @@ export async function apiLoadRegions(): Promise<Region[]> {
 	};
 	try {
 		const regionsResponse = await axios.get<Region[]>(regionsURL, config);
-		console.log(regionsResponse);
 
 		return regionsResponse.data;
 		
@@ -186,7 +184,7 @@ export async function apiLoadRegions(): Promise<Region[]> {
 }
 
 export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selectedGameOption = null, selectedRegionOption = null}: { pageParam?: number | undefined; searchQuery: string; selectedGameOption: Game | null; selectedRegionOption: Region | null; }): Promise<loadFacilities> {
-	let facilitiesURL = `${localhost}/api/facilities/?page=${pageParam}&title_or_address=${searchQuery}/`;
+	let facilitiesURL = `${localhost}/api/facilities/?page=${pageParam}&title_or_address=${searchQuery}`;
 	
 	if (selectedGameOption !== null) {
 		facilitiesURL += `&facility_game_id=${selectedGameOption.id}`;
@@ -203,7 +201,6 @@ export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selec
 	};
 	try {
 		const facilitiesResponse = await axios.get(facilitiesURL, config);
-		console.log(facilitiesResponse.data);
 		
 		return facilitiesResponse.data;
 	} catch (error) {

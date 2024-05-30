@@ -77,7 +77,19 @@ i18n
 					location: {
 						title: "Располажение",
 						link: "Перейти на карты"
-					}
+					},
+					checkout: {
+						title: "Оформление брони",
+						payment_type__title: "Опция оплаты",
+						payment_type__deposit: "Депозит",
+						payment_type__deposit__subtitle: "40% от суммы",
+						payment_type__full: "Полная оплата",
+						payment_type__full__subtitle: "100%",
+						payment_option__title: "Способ оплаты",
+						booking_info__date: "Дата:",
+						booking_info__time: "Время:",
+						pay: "Оплатить",
+					},
 				},
 				teams: {
 					title: "Скоро!",
@@ -261,6 +273,18 @@ i18n
 					location: {
 						title: "Manzil",
 						link: "Xaritaga o'tish"
+					},
+					checkout: {
+						title: "Bandlovni rasmiylashtirish",
+						payment_type__title: "To'lov opsiyasi",
+						payment_type__deposit: "Depozit",
+						payment_type__deposit__subtitle: "Miqdorning 40%",
+						payment_type__full: "To'liq to'lov",
+						payment_type__full__subtitle: "100%",
+						payment_option__title: "To'lov usuli",
+						booking_info__date: "Sana:",
+						booking_info__time: "Vaqt:",
+						pay: "To'lash",
 					},
 				},
 				teams: {

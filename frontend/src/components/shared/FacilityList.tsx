@@ -13,14 +13,12 @@ const FacilityList: React.FC<FacilityListProps> = ({selectedGameOption, setSelec
     const { isLoading: isLoadingRegions, data: regions} = useLoadRegionsQuery();
 	const [searchQuery, setSearchQuery] = useState('');
 	
-	console.log(regions);
-	
 	const { status, data, fetchNextPage, isFetchingNextPage } = useLoadFacilitiesInfiniteQuery({ searchQuery, selectedGameOption, selectedRegionOption })
 	
 	const facilities = data?.pages.flatMap(page => page.results) || [];
 	
 	const { ref, inView } = useInView();
-
+	
 	useEffect(() => {
 		if (inView) {
 			fetchNextPage();

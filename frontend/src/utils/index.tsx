@@ -75,6 +75,35 @@ export function formatDate(dateStr: string) {
 	return formattedDate;
 }
 
+function getHourWord(hours: number): string {
+    const lastDigit = hours % 10;
+	if (i18n.language === 'ru') {
+		if (hours >= 11 && hours <= 14) {
+			return 'часов';
+		} else if (lastDigit === 1) {
+			return 'час';
+		} else if (lastDigit >= 2 && lastDigit <= 4) {
+			return 'часа';
+		} else {
+			return 'часов';
+		}
+	} else{
+		return 'soat';
+	}
+}
+
+export function calculateHourDifference(firstHour: string, lastHour: string): string {
+    const [firstHourStr, lastHourStr] = [firstHour, lastHour].map(time => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return new Date(0, 0, 0, hours, minutes);
+    });
+
+    const hourDifference = Math.abs(lastHourStr.getTime() - firstHourStr.getTime()) / (60 * 60 * 1000);
+    
+	const hourWord = getHourWord(hourDifference);
+
+    return `${hourDifference} ${hourWord}`;
+}
 
 function isConsecutiveTime(prevTime: string, nextTime: string) {
 	if (!prevTime) return false;
