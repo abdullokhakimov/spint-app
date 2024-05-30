@@ -277,7 +277,7 @@ class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
 class CheckOrder(Paycom):
     def check_order(self, amount, account, *args, **kwargs):
         order = Order.objects.filter(id=account["order_id"], is_finished=False).first()
-
+		
         if not order:
             return self.ORDER_NOT_FOND
         if order.total_price * 100 != amount:
@@ -311,7 +311,15 @@ class CheckOrder(Paycom):
         return self.SUCCESS
 
     def cancel_payment(self, account, transaction, *args, **kwargs):
-        print(account)
+        order_id = transaction.order_key
+
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            return self.ORDER_NOT_FOUND
+
+        # Delete the order
+        order.delete()
 
 
 class TestView(MerchantAPIView):
