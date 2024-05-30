@@ -296,7 +296,7 @@ class CheckOrder(Paycom):
         # Create bookings based on order data
         user = order.user
         room = order.room
-        times = order.time.all()  # Assuming time is a ManyToManyField
+        times = order.time  # Assuming time is a ManyToManyField
 
         for t in times:
             existing_booking = Booking.objects.filter(room=room, date=order.date, time=t).exists()
