@@ -294,19 +294,19 @@ class CheckOrder(Paycom):
         order.save()
 
         # Create bookings based on order data
-        user = order.user
-        room = order.room
-        times = order.time.all()  # Assuming time is a ManyToManyField
-
-        for t in times:
-            existing_booking = Booking.objects.filter(room=room, date=order.date, time=t).exists()
-            if existing_booking:
-                # Handle case where booking already exists for the same date and time
-                print(f"Booking for date {order.date} and time {t} already exists")
-                continue
-
-            # Create a new booking
-            Booking.objects.create(user=user, room=room, date=order.date, time=[t])
+        # user = order.user
+        # room = order.room
+        # times = order.time.all()  # Assuming time is a ManyToManyField
+        #
+        # for t in times:
+        #     existing_booking = Booking.objects.filter(room=room, date=order.date, time=t).exists()
+        #     if existing_booking:
+        #         # Handle case where booking already exists for the same date and time
+        #         print(f"Booking for date {order.date} and time {t} already exists")
+        #         continue
+        #
+        #     # Create a new booking
+        #     Booking.objects.create(user=user, room=room, date=order.date, time=[t])
 
         return self.SUCCESS
 
