@@ -158,8 +158,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def save(self, *args, **kwargs):
-        if not self.order_id:
-            self.order_id = self.generate_unique_order_id()
+        if not self.id:
+            self.id = self.generate_unique_order_id()
         super().save(*args, **kwargs)
 
     def generate_unique_order_id(self):
@@ -171,7 +171,7 @@ class Order(models.Model):
             random_number = random.randint(min_value, 10 ** 8)  # 10**8 is an arbitrary large number
 
             # Check if the random number is unique in the database
-            if not Order.objects.filter(order_id=random_number).exists():
+            if not Order.objects.filter(id=random_number).exists():
                 return random_number
 
 
