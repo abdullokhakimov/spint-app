@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Game, Benefit, Facility, Room, Region, Booking, Invitation, Notification
+from .models import Game, Benefit, Facility, Room, Region, Booking, Invitation, Notification, Order
 from djoser.serializers import UserSerializer
 
 User = get_user_model()
@@ -108,3 +108,8 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'type', 'receiver', 'message', 'created_at', 'invitation']
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'

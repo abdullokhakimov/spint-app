@@ -1,6 +1,6 @@
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
-from .models import UserAccount, Region, Game, Benefit, Facility, Room, Booking, Invitation, Notification
+from .models import UserAccount, Region, Game, Benefit, Facility, Room, Booking, Invitation, Notification, Order
 
 
 class RegionAdmin(TranslationAdmin):
@@ -33,7 +33,6 @@ class BookingAdmin(admin.ModelAdmin):
     list_filter = ('room__facility', 'date',)
     list_display_links = ('facility_title',)
 
-
     def facility_title(self, obj):
         return obj.room.facility.title
 
@@ -53,6 +52,12 @@ class NotificationAdmin(TranslationAdmin):
     list_display = ('message', 'id')
     search_fields = ('message',)
 
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "status", "total_price", "is_finished")
+    list_filter = ('date', 'created_at',)
+    list_display_links = ('id',)
+
+
 admin.site.register(UserAccount)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(Game, GameAdmin)
@@ -62,3 +67,4 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Booking, BookingAdmin)
 admin.site.register(Invitation, InvitationAdmin)
 admin.site.register(Notification, NotificationAdmin)
+admin.site.register(Order, OrderAdmin)

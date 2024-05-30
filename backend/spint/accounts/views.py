@@ -11,12 +11,14 @@ from djoser.serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from .filters import FacilitySearchFilter, BookingFilter, UserSearchFilter, NotificationFilter
-from .models import Facility, Region, Game, Benefit, Room, Booking, Invitation, Notification
+from .models import Facility, Region, Game, Benefit, Room, Booking, Invitation, Notification, Order
 from .serializers import RegionSerializer, BookingSerializer, GameSerializer, BenefitSerializer, FacilityListSerializer, \
     FacilityDetailSerializer, FacilityMapCoordinatesListSerializer, RoomSerializer, FilteredBookingSerializer, \
-    InvitationSerializer, NotificationSerializer
+    InvitationSerializer, NotificationSerializer, OrderSerializer
 from .utils import get_consecutive_booking_times
 from django.utils.translation import gettext as _
+from paycomuz import Paycom
+from paycomuz.views import MerchantAPIView
 
 User = get_user_model()
 
@@ -255,3 +257,62 @@ class NotificationListView(ListAPIView):
     serializer_class = NotificationSerializer
     filter_backends = [DjangoFilterBackend]  # Add filter backend
     filterset_class = NotificationFilter
+
+class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+class CheckOrder(Paycom):
+    def check_order(self, amount, account, *args, **kwargs):
+        order = Order.objects.filter(id=account["order_id"], is_finished=False).first()
+
+        if not order:
+            return self.ORDER_NOT_FOND
+        if order.total_price * 100 != amount:
+            return self.INVALID_AMOUNT
+
+        return self.ORDER_FOUND
+
+    def successfully_payment(self, account, transaction, *args, **kwargs):
+        order = Order.objects.filter(id=transaction.order_key).first()
+        if not order:
+            return self.ORDER_NOT_FOND
+
+        order.is_finished = True
+        order.save()
+
+        # Create bookings based on order data
+        user = order.user
+        room = order.room
+        times = order.time.all()  # Assuming time is a ManyToManyField
+
+        for t in times:
+            existing_booking = Booking.objects.filter(room=room, date=order.date, time=t).exists()
+            if existing_booking:
+                # Handle case where booking already exists for the same date and time
+                print(f"Booking for date {order.date} and time {t} already exists")
+                continue
+
+            # Create a new booking
+            Booking.objects.create(user=user, room=room, date=order.date, time=[t])
+
+        return self.SUCCESS
+
+    def cancel_payment(self, account, transaction, *args, **kwargs):
+        print(account)
+
+
+class TestView(MerchantAPIView):
+    VALIDATE_CLASS = CheckOrder

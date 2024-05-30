@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h-2mqh0v$4kh#(!)=jqb*^y#&$$#f^at+^ns%uxlb@nmtg#r('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost']
-
+# ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost']
+ALLOWED_HOSTS = ["*"]
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dmuvgzd66',
@@ -38,6 +38,14 @@ CLOUDINARY_STORAGE = {
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Application definition
+
+PAYCOM_SETTINGS = {
+    "KASSA_ID": "6655bcccdc744dbc4b2228ec",  # token
+    "SECRET_KEY": "OtEBqcND%VEObF@ejeudQ2AAhJo%H1@QSZ#H",  # password
+    "ACCOUNTS": {
+        "KEY": "order_id"
+    },
+}
 
 LANGUAGE_CODE = 'ru'
 
@@ -66,6 +74,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
+    'paycomuz',
 ]
 
 MIDDLEWARE = [
@@ -174,7 +183,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 DJOSER = {

@@ -1,6 +1,10 @@
+import random
+import string
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+import uuid
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, username, email, password=None):
@@ -126,7 +130,8 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name='Название комнаты')
     date = models.DateField(verbose_name='Дата бронирования', null=True, blank=True)
     time = models.TimeField(verbose_name='Время бронирования', null=True, blank=True)
-    invited_users = models.ManyToManyField(UserAccount, null=True, blank=True, verbose_name="Приглашенные пользователи", related_name='bookings_as_invited_user')
+    invited_users = models.ManyToManyField(UserAccount, blank=True, verbose_name="Приглашенные пользователи",
+                                           related_name='bookings_as_invited_user')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     class Meta:
@@ -134,6 +139,46 @@ class Booking(models.Model):
         verbose_name_plural = 'Бронирования'
         ordering = ['-created_at']
 
+class Order(models.Model):
+    PAYMENT_OPTION_CHOICES = [
+        ('deposit', 'Депозит'),
+        ('full', 'Полная оплата'),
+    ]
+
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Заказчик", related_name='ordering_as_user')
+    status = models.CharField(max_length=20, choices=PAYMENT_OPTION_CHOICES, default="full")
+    total_price = models.IntegerField(default=0)
+    is_finished = models.BooleanField(default=False)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name='Название комнаты')
+    date = models.DateField(verbose_name='Дата бронирования', null=True, blank=True)
+    time = models.JSONField(default=list, blank=True, verbose_name='Время бронирования')
+    invited_users = models.ManyToManyField(UserAccount, blank=True, verbose_name="Приглашенные пользователи",
+                                           related_name='order_as_invited_user')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = self.generate_unique_order_id()
+        super().save(*args, **kwargs)
+
+    def generate_unique_order_id(self):
+        # Define the desired minimum value for the order_id
+        min_value = 1000000  # Example: 1 million
+
+        while True:
+            # Generate a random number larger than the minimum value
+            random_number = random.randint(min_value, 10 ** 8)  # 10**8 is an arbitrary large number
+
+            # Check if the random number is unique in the database
+            if not Order.objects.filter(order_id=random_number).exists():
+                return random_number
+
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+        ordering = ['-created_at']
 
 
 class Invitation(models.Model):
@@ -171,3 +216,5 @@ class Notification(models.Model):
         verbose_name = 'Уведомление'
         verbose_name_plural = 'Уведомления'
         ordering = ['pk']
+
+
