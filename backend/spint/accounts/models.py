@@ -130,8 +130,6 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name='Название комнаты')
     date = models.DateField(verbose_name='Дата бронирования', null=True, blank=True)
     time = models.TimeField(verbose_name='Время бронирования', null=True, blank=True)
-    invited_users = models.ManyToManyField(UserAccount, blank=True, verbose_name="Приглашенные пользователи",
-                                           related_name='bookings_as_invited_user')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     class Meta:
@@ -150,6 +148,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=PAYMENT_OPTION_CHOICES, default="full")
     total_price = models.IntegerField(default=0)
     is_finished = models.BooleanField(default=False)
+    payme_checkout_link = models.CharField(max_length=300, blank=True, null=True, verbose_name="Ссыслка дл оплаты через Payme")
     room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name='Название комнаты')
     date = models.DateField(verbose_name='Дата бронирования', null=True, blank=True)
     time = models.JSONField(default=list, blank=True, verbose_name='Время бронирования')
@@ -184,7 +183,7 @@ class Order(models.Model):
 class Invitation(models.Model):
     sender = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='sent_invitations')
     receiver = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='received_invitations')
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='invitations')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='invitations', default=0)
     status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('excluded', 'Excluded')], default='pending')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создано")
 
@@ -198,7 +197,7 @@ class Invitation(models.Model):
 
     def accept(self):
         self.status = 'accepted'
-        self.booking.invited_users.add(self.receiver)
+        self.order.invited_users.add(self.receiver)
         self.save()
 
 class Notification(models.Model):

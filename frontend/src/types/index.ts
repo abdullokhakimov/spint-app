@@ -133,17 +133,19 @@ export type TimepickerProps = {
 	endTime: string;
 }
 
-export type FilteredBooking = {
+export type FilteredOrder = {
 	id: number;
-	user: string;
+	status: string;
+	is_finished: boolean;
 	facility_title: string;
 	facility_id: number;
 	room_id: number;
 	room_title: string;
 	date: string;
-	time: string;
-	room_price: number;
+	time: string[];
+	total_price: number;
 	invited_users: typeUser[];
+	payme_checkout_link: string | null;
 }
 export type Notification = {
 	id: number;
@@ -152,6 +154,7 @@ export type Notification = {
 	type: string;
 	created_at: string;
 	invitation: number;
+	is_read: boolean;
 }
 
 export type Languages = {

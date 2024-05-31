@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/AuthContext";
 import { calculateHourDifference, formatDate, getNextHour } from "../../utils";
-// import { useCreateBookingMutation } from "../../services/react-query/queries";
+import { useCreateOrderMutation } from "../../services/react-query/queries";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ function FacilityDetailBook({selectedDate, selectedTimeRange, roomPrice, roomID,
 		return `${year}-${month < 10 ? '0' + month : month}-${day}`
 	}
 	
-	// const { mutateAsync: mutateCreateBooking, status } = useCreateBookingMutation();	
+	const { mutateAsync: mutateCreateOrder, status } = useCreateOrderMutation();	
 	
   	const navigate = useNavigate();
 
@@ -39,9 +39,9 @@ function FacilityDetailBook({selectedDate, selectedTimeRange, roomPrice, roomID,
 	useEffect(() => {
 		if (paymentType == 'deposit' ) {
 			if (selectedTimeRange.length <= 1 ) {
-				setPrice(roomPrice*0.4);
+				setPrice(Math.round(roomPrice * 0.4));
 			}else{
-				setPrice(roomPrice*selectedTimeRange.length*0.4)
+				setPrice(Math.round(roomPrice * selectedTimeRange.length * 0.4));
 			}
 		}else{
 			if (selectedTimeRange.length <= 1 ) {
@@ -190,14 +190,14 @@ function FacilityDetailBook({selectedDate, selectedTimeRange, roomPrice, roomID,
 					<div className="facility-details__ckeckout__booking-info__time">
 						<span>{ t("facility__detail.checkout.booking_info__time") }</span>
 						{selectedTimeRange.length > 0 ? (
-						<span>{selectedTimeRange[0]} - {getNextHour(selectedTimeRange[selectedTimeRange.length - 1])} { calculateHourDifference(selectedTimeRange[0], getNextHour(selectedTimeRange[selectedTimeRange.length - 1])) }</span>
+							<span>{selectedTimeRange[0]} - {getNextHour(selectedTimeRange[selectedTimeRange.length - 1])} { calculateHourDifference(selectedTimeRange[0], getNextHour(selectedTimeRange[selectedTimeRange.length - 1])) }</span>
 						) : (
 							<span>Select time</span>
 						)}
 					</div>
 				</div>
 
-				<button onClick={() => {}}  
+				<button onClick={() => {mutateCreateOrder({ user: user.id, room: roomID, date: date(), timeRange: selectedTimeRange, paymentOption: paymentType, totalPrice: price})}}  
 					className={`facility-details__bron__submit facility-details__pay__submit ${!isAuthenticated || selectedTimeRange.length === 0 || status === 'pending' ? 'disabled' : ''}`}
 					disabled={!isAuthenticated || selectedTimeRange.length === 0 || status === 'pending' || user.is_owner == true}
 				>

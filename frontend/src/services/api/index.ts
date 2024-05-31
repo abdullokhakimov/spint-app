@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { FacilityMapCoordinates, Game, loadFacilities, Region, typeNewUser } from "../../types";
 import i18n from '../../i18n';
 
-const localhost = 'https://spint.uz/api'
+const localhost = 'http://127.0.0.1:8000/api'
 
 
 export async function apiCreateNewUser(user: typeNewUser) {
@@ -174,14 +174,16 @@ export async function apiLoadRegions(): Promise<Region[]> {
 	};
 	try {
 		const regionsResponse = await axios.get<Region[]>(regionsURL, config);
-
 		return regionsResponse.data;
+		
 		
 	} catch (error) {
 		toast.error(i18n.t("toast.load__regions__error"));
 		throw new Error(i18n.t("toast.load__regions__error"));
 	}
 }
+
+
 
 export async function apiLoadFacilities({ pageParam = 1, searchQuery = '', selectedGameOption = null, selectedRegionOption = null}: { pageParam?: number | undefined; searchQuery: string; selectedGameOption: Game | null; selectedRegionOption: Region | null; }): Promise<loadFacilities> {
 	let facilitiesURL = `${localhost}/api/facilities/?page=${pageParam}&title_or_address=${searchQuery}`;
@@ -249,8 +251,10 @@ export async function apiLoadFacilityDetails(facilityID: string | undefined) {
 	return facilityDetailsResponse.data;
 }
 
-export async function apiCreateBooking({user, room, date, timeRange}: {user: number; room: number; date: string; timeRange: string[];}) {
-	const createBookingURL = `${localhost}/api/bookings/`;
+export async function apiCreateOrder({user, room, date, timeRange, paymentOption, totalPrice}: {user: number; room: number; date: string; timeRange: string[]; paymentOption: string; totalPrice: number;}) {
+	const createOrderURL = `${localhost}/api/orders/`;
+
+	const totalPriceInSums = totalPrice * 1000;
 
 	const config = {
 		headers: {
@@ -260,6 +264,8 @@ export async function apiCreateBooking({user, room, date, timeRange}: {user: num
 	};
 
 	const body = {
+		status: paymentOption,
+		total_price: totalPriceInSums,
         user: user,
         room: room,
         date: date,
@@ -267,14 +273,24 @@ export async function apiCreateBooking({user, room, date, timeRange}: {user: num
     };
 	
 	try {
-        await axios.post(createBookingURL, body, config);
+        const createOrderResponse = await axios.post(createOrderURL, body, config);
+		console.log(createOrderResponse.data);
+		
 	} catch (error){		
         toast.error(i18n.t("toast.booking__error"));
 	}
 }
 
-export async function apiLoadBookings(userID: number) {
-	const bookingsURL = `${localhost}/api/bookings/?user=${userID}`;
+export async function apiLoadOrders(userID: number, is_owner: boolean) {	
+	let ordersURL = "";
+	if (is_owner == true) {
+		ordersURL = `${localhost}/api/orders/?user=&owner=${userID}`;
+	}else{
+		ordersURL = `${localhost}/api/orders/?user=${userID}`;
+	}
+	console.log(ordersURL);
+	
+	
 	
 	const config = {
 		headers: {
@@ -284,7 +300,7 @@ export async function apiLoadBookings(userID: number) {
 	};
 
 	try {
-		const bookingsResponse = await axios.get(bookingsURL, config);
+		const bookingsResponse = await axios.get(ordersURL, config);
 		return bookingsResponse.data;
 	} catch (error) {
 		return error;
@@ -309,7 +325,7 @@ export async function apiLoadSearchedUsers(searchQuery: string) {
 	}
 }
 
-export async function apiCreateInvitation({senderID, receiverID, bookingID}: {senderID: number; receiverID: number; bookingID: number;}) {
+export async function apiCreateInvitation({senderID, receiverID, orderID}: {senderID: number; receiverID: number; orderID: number;}) {
 	const createInvitationURL = `${localhost}/api/invitations/`;
 
 	const config = {
@@ -322,7 +338,7 @@ export async function apiCreateInvitation({senderID, receiverID, bookingID}: {se
 	const body = {
         sender: senderID,
         receiver: receiverID,
-        booking: bookingID
+        order: orderID
     };
 	
 	try {
@@ -337,7 +353,9 @@ export async function apiCreateInvitation({senderID, receiverID, bookingID}: {se
 			}
 		} else {
 			toast.error(i18n.t("toast.invite__error"));
-		}		
+		}	
+		console.log(error);
+			
 	}
 }
 
@@ -356,6 +374,47 @@ export async function apiLoadNotifications(userID: number) {
 		return notificationsResponse.data;
 	} catch (error) {
 		return error;
+	}
+}
+
+export async function apiLoadUnreadNotifications(userID: number) {
+	const notificationsURL = `${localhost}/api/notifications/unread_length/?receiver_id=${userID}`;
+	
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept-Language': `${i18n.resolvedLanguage}`
+		}
+	};
+
+	try {
+		const notificationsResponse = await axios.get(notificationsURL, config);		
+		return notificationsResponse.data;
+	} catch (error) {
+		return error;
+	}
+}
+
+export async function apiReadNotifications({userID}: {userID: number}) {
+	const readNotificationsURL = `${localhost}/api/notifications/mark_as_read/`;
+	
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+		}
+	};
+	
+	const body = {
+		receiver_id: userID,
+	}
+	console.log(body);
+	
+	try {
+		await axios.post(readNotificationsURL, body, config);
+	} catch (error) {
+		console.log(error);
+		
+		toast.error("Server error");
 	}
 }
 
@@ -395,8 +454,8 @@ export async function apiRejectInvitation({invitationID}: {invitationID: number}
 	}
 }
 
-export async function apiExcludeInvitation({ bookingID, excludeUserID }: { bookingID: number; excludeUserID: number; }) {
-	const rejectInvitationURL = `${localhost}/api/bookings/${bookingID}/exclude_user/`;
+export async function apiExcludeInvitation({ orderID, excludeUserID }: { orderID: number; excludeUserID: number; }) {
+	const rejectInvitationURL = `${localhost}/api/orders/${orderID}/exclude_user/`;
 	
 	const config = {
 		headers: {

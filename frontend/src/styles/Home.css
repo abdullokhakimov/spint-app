@@ -55,6 +55,22 @@
 .filter__notification-mobile {
 	display: none;
 	padding-right: 20px;
+	position: relative;
+}
+.filter__notification__unread__length {
+	position: absolute;
+	top: -2px;
+	right: 18px;
+	width: 17px;
+	height: 17px;
+	background-color: var(--red);
+	border-radius: 50%;
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .filters__selection {

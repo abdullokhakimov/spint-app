@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { FilteredBooking } from "../../types"
+import { FilteredOrder } from "../../types"
 import { Link } from "react-router-dom";
-import { formatDate, getNextHour, hideEmail } from "../../utils";
+import { calculateHourDifference, formatDate, getNextHour, hideEmail } from "../../utils";
 import Modal from "../ui/Modal";
 import debounce from 'lodash.debounce';
 import { useCreateInvitationMutation, useExcludeInvitationMutation, useLoadBookingsQuery, useLoadSearchedUsersQuery } from "../../services/react-query/queries";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import BookingSearchUsersSkeleton from "./BookingSearchUsersSkeleton";
 
-function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
+function BookingItem ({ order }: { order: FilteredOrder;}) {
 	const { t } = useTranslation();
     
 	const { user } = useUserContext();
@@ -21,7 +21,7 @@ function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const debouncedSearch = debounce(setSearchQuery, 700);
 	
-	const { refetch: refetchBookings } = useLoadBookingsQuery({ id: user.id });
+	const { refetch: refetchBookings } = useLoadBookingsQuery({ id: user.id, is_owner: user.is_owner });
 	const { data: searchedUsers, isLoading: isLoadingSearchedUsers } = useLoadSearchedUsersQuery({ searchQuery })
 	
 	const [isCopied, setCopied] = useState(false);
@@ -48,38 +48,39 @@ function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 	
 	return (
 		<li className="bookings__item">
-			<Link to={`/facility/${booking[0].facility_id}`} className="bookings__item__title">
-				{ booking[0].facility_title } {booking[0].room_title}
+			<Link to={`/facility/${order.facility_id}`} className="bookings__item__title">
+				{ order.facility_title } {order.room_title}
 			</Link>
 
 			<ul className="bookings__item__info__list">
-				{ user.is_owner == true ? (
 				<li className="bookings__item__info__list__item">
 					<span>{t("bookings.item.owner__info__user")}:</span>
-					<span>{ booking[0].user }</span>
+
+					<span>{ order.id }</span>
 				</li>
-				) : null}
 
 				<li className="bookings__item__info__list__item">
 					<span>{t("bookings.item.date")}:</span>
-					<span>{ formatDate(booking[0].date) }</span>
+					<span>{ formatDate(order.date) }</span>
 				</li>
 				<li className="bookings__item__info__list__item">
 					<span>{t("bookings.item.time")}:</span>
-					{ booking.length == 1 ? (
-						<span>{booking[0].time} - {getNextHour(booking[0].time)}</span>
-					) : (
-						<span>{booking[booking.length - 1].time} - {getNextHour(booking[0].time)}</span>
-					)}
+
+					<span>{order.time[0]} - {getNextHour(order.time[order.time.length - 1])} { calculateHourDifference(order.time[0], getNextHour(order.time[order.time.length - 1])) }</span>
 					
 				</li>
 				<li className="bookings__item__info__list__item">
 					<span>{t("bookings.item.payment")}:</span>
-					<span>Депозит/Полная оплата</span>
+
+					<span>{ order.status == "deposit" ? t("bookings.item.deposit") : order.status == "full" ? t("bookings.item.deposit") : "Error" }</span>
 				</li>
 				<li className="bookings__item__info__list__item">
 					<span>{t("bookings.item.sum")}:</span>
-					<span>{booking.length * booking[0].room_price} 000 {t("others.som")}</span>
+					<span>{ order.total_price.toLocaleString('en-US').replace(/,/g, ' ') } {t("others.som")}</span>
+				</li>
+				<li className="bookings__item__info__list__item">
+					<span>{t("bookings.item.state")}:</span>
+					<span>{ order.is_finished == true ? t("bookings.item.finished") : order.is_finished == false ? t("bookings.item.not_finished") : "Error" }</span>
 				</li>
 			</ul>
 
@@ -203,7 +204,7 @@ function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 					</div>
 					
 					<h4 className="bookings__item__invate__modal__main__users-invited__title">
-						{booking[0].invited_users.length > 0 ? (
+						{ order.invited_users.length > 0 ? (
 							searchQuery !== '' ? (t("bookings.item.search")) : (t("bookings.item.invited__users"))
 						) : (
 							t("bookings.item.noone__invited")
@@ -211,8 +212,8 @@ function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 					</h4>
 					
 					<ul className="bookings__item__invate__modal__main__users__list">
-                        { booking[0].invited_users.length > 0 && searchQuery == '' ? (
-							booking[0].invited_users.map((invitedUser, index) => (
+                        { order.invited_users.length > 0 && searchQuery == '' ? (
+							order.invited_users.map((invitedUser, index) => (
 								<li key={index} className="bookings__item__invate__modal__main__users__item">
 									<div className="bookings__item__invate__modal__main__users__item__info">
 										<div className="bookings__item__invate__modal__main__users__item__info__logo">
@@ -229,7 +230,7 @@ function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 									</div>
 
 									<button 
-										onClick={() => {mutateExcludeInvitation({ bookingID: booking[0].id, excludeUserID: invitedUser.id })}}
+										onClick={() => {mutateExcludeInvitation({ orderID: order.id, excludeUserID: invitedUser.id })}}
 										className="bookings__item__invate__modal__main__users__item__remove"
 									>
 										{t("bookings.item.exclude")}
@@ -260,21 +261,14 @@ function BookingItem ({ booking }: { booking: FilteredBooking[];}) {
 												</div>
 											</div>
 
-											<button onClick={() => {mutateCreateInvitation({ senderID: user.id, receiverID: searchedUser.id, bookingID: booking[0].id})}} className={`bookings__item__invate__modal__main__users__item__add ${status === 'pending' ? 'disabled' : ''} ${status === 'success' ? 'disabled-success' : ''}`} disabled={status === 'success' || status === 'pending'}>
-												{ status === 'success' ? (
-													<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M2 10.1316L6.99412 15.2632L17 5" strokeWidth="2"/>
-													</svg>
-												) : (
+											<button onClick={() => {mutateCreateInvitation({ senderID: user.id, receiverID: searchedUser.id, orderID: order.id})}} className={`bookings__item__invate__modal__main__users__item__add ${status === 'pending' ? 'disabled' : ''} ${status === 'success' ? 'disabled-success' : ''}`} disabled={status === 'success' || status === 'pending'}>											
 													<svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 														<path d="M9.99998 10.0001C12.3012 10.0001 14.1666 8.1346 14.1666 5.83341C14.1666 3.53223 12.3012 1.66675 9.99998 1.66675C7.69879 1.66675 5.83331 3.53223 5.83331 5.83341C5.83331 8.1346 7.69879 10.0001 9.99998 10.0001Z" strokeWidth="1.5"/>
 														<path d="M2.84167 18.3333C2.84167 15.1083 6.05001 12.5 10 12.5C10.8 12.5 11.575 12.6083 12.3 12.8083" strokeWidth="1.5"/>
 														<path d="M18.3334 15.0001C18.3334 15.2667 18.3 15.5251 18.2334 15.7751C18.1584 16.1084 18.025 16.4334 17.85 16.7167C17.275 17.6834 16.2167 18.3334 15 18.3334C14.1417 18.3334 13.3667 18.0084 12.7834 17.4751C12.5334 17.2584 12.3167 17.0001 12.15 16.7167C11.8417 16.2167 11.6667 15.6251 11.6667 15.0001C11.6667 14.1001 12.025 13.2751 12.6084 12.6751C13.2167 12.0501 14.0667 11.6667 15 11.6667C15.9834 11.6667 16.875 12.0918 17.475 12.7751C18.0084 13.3668 18.3334 14.1501 18.3334 15.0001Z" strokeWidth="1.5"/>
 														<path d="M16.2417 14.9834H13.7584" strokeWidth="1.5"/>
 														<path d="M15 13.7666V16.2583" strokeWidth="1.5"/>
-													</svg>
-												)}
-												
+													</svg>										
 											</button>
 										</li>
 									)	

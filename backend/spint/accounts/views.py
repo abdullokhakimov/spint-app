@@ -1,21 +1,21 @@
-import hashlib
 import locale
-
 from babel.dates import format_date
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins, pagination, status
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, ListCreateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from djoser.serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
-from .filters import FacilitySearchFilter, BookingFilter, UserSearchFilter, NotificationFilter
+from rest_framework.viewsets import ModelViewSet
+
+from .filters import FacilitySearchFilter, UserSearchFilter, NotificationFilter, OrderFilter
 from .models import Facility, Region, Game, Benefit, Room, Booking, Invitation, Notification, Order
 from .serializers import RegionSerializer, BookingSerializer, GameSerializer, BenefitSerializer, FacilityListSerializer, \
-    FacilityDetailSerializer, FacilityMapCoordinatesListSerializer, RoomSerializer, FilteredBookingSerializer, \
+    FacilityDetailSerializer, FacilityMapCoordinatesListSerializer, RoomSerializer, \
     InvitationSerializer, NotificationSerializer, OrderSerializer
-from .utils import get_consecutive_booking_times
+from .utils import format_time_range
 from django.utils.translation import gettext as _
 from paycomuz import Paycom
 from paycomuz.views import MerchantAPIView
@@ -74,134 +74,45 @@ class RoomsListView(ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-class BookingViewSet(viewsets.GenericViewSet,
-                     mixins.CreateModelMixin,
-                     mixins.ListModelMixin,
-                     mixins.RetrieveModelMixin,
-                     mixins.UpdateModelMixin):
+class BookingViewSet(ListAPIView):
     queryset = Booking.objects.all()
-    filter_backends = [DjangoFilterBackend]  # Add filter backend
-    filterset_class = BookingFilter
-
-    def get_serializer_class(self):
-        if self.request.query_params.get('user') or self.request.query_params.get('owner'):
-            return FilteredBookingSerializer
-        return BookingSerializer
-
-    def create(self, request, *args, **kwargs):
-        user_id = request.data.get('user')
-        user = User.objects.get(id=user_id)
-        room_id = request.data.get('room')
-        room = Room.objects.get(id=room_id)
-        times = request.data.get('time', [])
-        invited_users_ids = request.data.get('invited_users', [])
-
-        # Check if times is a list
-        if not isinstance(times, list):
-            error_message = _("Неправильный формат времени")
-            return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
-
-        if user_id in invited_users_ids:
-            error_message = _("Создатель бронирования не может быть в списке приглашенных пользователей")
-            return Response({"error": error_message},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        created_entries = []
-        for t in times:
-            # Check if booking with the same room, date, and time already exists
-            existing_booking = Booking.objects.filter(room=room, date=request.data.get('date'), time=t).exists()
-            if existing_booking:
-                error_message = _(f"Бронь на число {request.data.get('date')}, и время {t} уже существует")
-                return Response({
-                                    "error": error_message},
-                                status=status.HTTP_400_BAD_REQUEST)
-
-            # Create a copy of request data to avoid modifying original data
-            data_copy = request.data.copy()
-            data_copy['time'] = t
-            serializer = self.get_serializer(data=data_copy)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(room=room, user=user)
-            created_entries.append(serializer.data)
-
-        return Response(created_entries, status=status.HTTP_201_CREATED)
-
-    @action(detail=True, methods=['post'])
-    def exclude_user(self, request, pk=None):
-        booking = self.get_object()
-        user_id = request.data.get('user_id')
-
-        if not user_id:
-            error_message = _("Требуется данные пользователя")
-            return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            error_message = _("Пользователь не найден")
-            return Response({"error": error_message}, status=status.HTTP_404_NOT_FOUND)
-
-        if user not in booking.invited_users.all():
-            error_message = _("Пользователь не в списке приглашенных пользователей")
-            return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
-
-        booking.invited_users.remove(user)
-        booking.save()
-
-        try:
-            invitation = Invitation.objects.get(booking=booking, receiver=user)
-            invitation.status = 'excluded'
-            invitation.save()
-
-            notification = Notification.objects.create(
-                type='invite_user',
-                receiver=invitation.receiver,
-                message_ru=f"Пользователь {invitation.sender.username} исключил вас из списка приглашенных пользователей игры",
-                message_uz=f"Foydalanuvchi {invitation.sender.username} sizni o'yinga taklif qilingan foydalanuvchilar ro'yxatdan chiqarib tashladi",
-                invitation=invitation
-            )
-            notification.save()
-        except Invitation.DoesNotExist:
-            error_message = _("Приглашение не найдено")
-            return Response({"error": error_message}, status=status.HTTP_404_NOT_FOUND)
-
-        success_message = _("Пользователь успешно исключен из списка приглашенных пользователей")
-        return Response({"message": success_message})
+    serializer_class = BookingSerializer
 
 class InvitationViewSet(viewsets.ModelViewSet):
     queryset = Invitation.objects.all()
     serializer_class = InvitationSerializer
 
     def create(self, request, *args, **kwargs):
+        print(request.data)
         sender = User.objects.get(id=request.data.get('sender'))
         receiver = User.objects.get(id=request.data.get('receiver'))
-        booking = Booking.objects.get(id=request.data.get('booking'))
+        order = Order.objects.get(id=request.data.get('order'))
 
         if sender == receiver:
             error_message = _("Вы не можете приглашать самого себя")
             return Response({"error": error_message},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        if booking.user != sender:
+        if order.user != sender:
             error_message = _("Только пользователь, создавший бронирование, может отправлять приглашения.")
             return Response({"error": error_message},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        existing_invitation = Invitation.objects.filter(sender=sender, receiver=receiver, booking=booking).exists()
+        existing_invitation = Invitation.objects.filter(sender=sender, receiver=receiver, order=order).exists()
         if existing_invitation:
             error_message = _("Вы уже отправляли приглашение этому пользователю для этого бронирования.")
             return Response({"error": error_message},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        invitation = Invitation.objects.create(sender=sender, receiver=receiver, booking=booking)
+        invitation = Invitation.objects.create(sender=sender, receiver=receiver, order=order)
         invitation.save()
 
         locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
         notification = Notification.objects.create(
             type='invite_user_action',
             receiver=receiver,
-            message_ru=f"Вы были приглашены в игру пользователем {sender.username} в <a href='/facility/{booking.room.facility.id}'>{booking.room.facility.title} {booking.room.title}</a> {booking.date.strftime('%d %B %Y г.')} {get_consecutive_booking_times(booking.date, booking.user, booking.room)}",
-            message_uz=f"{sender.username} sizni {format_date(booking.date, 'd MMMM y', locale='uz')} yil {get_consecutive_booking_times(booking.date, booking.user, booking.room)} gachan <a href='/facility/{booking.room.facility.id}'>{booking.room.facility.title} {booking.room.title}</a> ga oʻyinga taklif qildi",
+            message_ru=f"Вы были приглашены в игру пользователем {sender.username} в <a href='/facility/{order.room.facility.id}'>{order.room.facility.title} {order.room.title}</a> {order.date.strftime('%d %B %Y г.')} {format_time_range(order.time)}",
+            message_uz=f"{sender.username} sizni {format_date(order.date, 'd MMMM y', locale='uz')} yil {format_time_range(order.time)} gachan <a href='/facility/{order.room.facility.id}'>{order.room.facility.title} {order.room.title}</a> ga oʻyinga taklif qildi",
             invitation=invitation
         )
         notification.save()
@@ -252,18 +163,55 @@ class InvitationViewSet(viewsets.ModelViewSet):
         success_message = _(f"Статус приглашения {invitation.id} обновлен на {invitation.status}")
         return Response({"message": success_message})
 
-class NotificationListView(ListAPIView):
+class NotificationViewSet(ModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     filter_backends = [DjangoFilterBackend]  # Add filter backend
     filterset_class = NotificationFilter
 
+    @action(detail=False, methods=['get'])
+    def unread_length(self, request):
+        receiver_id = request.query_params.get('receiver_id')
+        if not receiver_id:
+            return Response({'error': 'receiver_id parameter is required'}, status=400)
+
+        unread_notifications = self.queryset.filter(receiver_id=receiver_id, is_read=False)
+        unread_notification_count = unread_notifications.count()
+        return Response({'unread_notification_count': unread_notification_count})
+
+    @action(detail=False, methods=['post'])
+    def mark_as_read(self, request):
+        receiver_id = request.data.get('receiver_id')
+        if not receiver_id:
+            return Response({'error': 'receiver_id parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        notifications = self.queryset.filter(receiver_id=receiver_id, is_read=False)
+        if notifications.exists():
+            notifications.update(is_read=True)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_200_OK)
+
+
 class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    filter_backends = [DjangoFilterBackend]  # Add filter backend
+    filterset_class = OrderFilter
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+        order = self.get_queryset().get(pk=response.data['id'])  # Get the created order instance
+        order_price = "{:.2f}".format(order_instance.total_price) # Get the created order instance
+
+        paycom = Paycom()
+        payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order.id, return_url='https://spint.uz/bookings/')
+
+        order_instance.payme_checkout_link = payme_checkout_url
+        order_instance.save()
+
+        serializer = self.get_serializer(order_instance)
+        return Response(serializer.data, status=response.status_code)
 
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
@@ -273,6 +221,48 @@ class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
 
     def perform_create(self, serializer):
         serializer.save()
+
+    @action(detail=True, methods=['post'])
+    def exclude_user(self, request, pk=None):
+        order = self.get_object()
+        user_id = request.data.get('user_id')
+
+        if not user_id:
+            error_message = _("Требуется данные пользователя")
+            return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            error_message = _("Пользователь не найден")
+            return Response({"error": error_message}, status=status.HTTP_404_NOT_FOUND)
+
+        if user not in order.invited_users.all():
+            error_message = _("Пользователь не в списке приглашенных пользователей")
+            return Response({"error": error_message}, status=status.HTTP_400_BAD_REQUEST)
+
+        order.invited_users.remove(user)
+        order.save()
+
+        try:
+            invitation = Invitation.objects.get(order=order, receiver=user)
+            invitation.status = 'excluded'
+            invitation.save()
+
+            notification = Notification.objects.create(
+                type='invite_user',
+                receiver=invitation.receiver,
+                message_ru=f"Пользователь {invitation.sender.username} исключил вас из списка приглашенных пользователей игры",
+                message_uz=f"Foydalanuvchi {invitation.sender.username} sizni o'yinga taklif qilingan foydalanuvchilar ro'yxatdan chiqarib tashladi",
+                invitation=invitation
+            )
+            notification.save()
+        except Invitation.DoesNotExist:
+            error_message = _("Приглашение не найдено")
+            return Response({"error": error_message}, status=status.HTTP_404_NOT_FOUND)
+
+        success_message = _("Пользователь успешно исключен из списка приглашенных пользователей")
+        return Response({"message": success_message})
 
 class CheckOrder(Paycom):
     def check_order(self, amount, account, *args, **kwargs):

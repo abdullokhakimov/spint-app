@@ -1,6 +1,6 @@
 import { useUserContext } from "../../context/AuthContext";
 import NotLoggedIn from "../../components/parts/NotLoggedIn";
-import { useAcceptInvitationMutation, useLoadNotificationsQuery, useRejectInvitationMutation } from "../../services/react-query/queries";
+import { useAcceptInvitationMutation, useLoadNotificationsQuery, useReadNotificationsMutation, useRejectInvitationMutation } from "../../services/react-query/queries";
 import '../../styles/Notifications.css'
 import { formatDateTime } from "../../utils";
 import { useEffect } from "react";
@@ -14,6 +14,15 @@ function Notifications() {
 	
 	const { isLoading: isLoadingBookings, data: notifications, refetch: refetchNotifications } = useLoadNotificationsQuery({ id: user.id });
 
+	const { mutateAsync: mutateReadNotifications } = useReadNotificationsMutation();
+
+	useEffect(() => {
+		if (user?.id || user?.id !== 0) { // Ensure user.id is not null or undefined
+            mutateReadNotifications({ userID: user.id });
+        }
+    }, [mutateReadNotifications, user?.id]); 
+	
+	
 	const { mutateAsync: mutateAcceptInvitation, status: acceptInvitationStatus } = useAcceptInvitationMutation();	
 	const { mutateAsync: mutateRejectInvitation, status: rejectInvitationStatus } = useRejectInvitationMutation();	
 	
@@ -42,6 +51,10 @@ function Notifications() {
 				<ul className="notifications__list">
 					{ notifications.map((notification, index) => (
 						<li className="notifications__list__item" key={index}>
+							{ notification.is_read == false && (
+								<span className="notifications_new"></span>
+							)}
+
 							<div className="notifications__list__item__header">
 								<h5 className="notifications__list__item__header__title">{t("notifications.item.title")}</h5>
 

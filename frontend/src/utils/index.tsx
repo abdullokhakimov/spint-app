@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilteredBooking } from '../types';
+import { FilteredOrder } from '../types';
 import i18n from '../i18n';
 
 export const convertSvgToHtml = (svg: string, className?: string) => {
@@ -40,7 +40,7 @@ export function getNextHour(time: string) {
     return nextHour;
 }
 
-export function formatDate(dateStr: string) {
+export function formatDate(dateStr: string) {	
 	const months: { [key: string]: string } = i18n.language === 'ru' ? {
 		'01': 'января',
 		'02': 'февраля',
@@ -69,9 +69,9 @@ export function formatDate(dateStr: string) {
 		'12': 'dekabr'
 	};
 
-	const [year, month, day] = dateStr.split('-');
+	const [year, month, day] = dateStr.split('-').map(part => part.padStart(2, '0'));
 	const formattedDate = `${parseInt(day)} ${months[month]} ${year}`;
-
+	
 	return formattedDate;
 }
 
@@ -105,83 +105,21 @@ export function calculateHourDifference(firstHour: string, lastHour: string): st
     return `${hourDifference} ${hourWord}`;
 }
 
-function isConsecutiveTime(prevTime: string, nextTime: string) {
-	if (!prevTime) return false;
-    const prevTimestamp = new Date(`1970-01-01T${prevTime}`);
-    const nextTimestamp = new Date(`1970-01-01T${nextTime}`);
-    return nextTimestamp.getTime() - prevTimestamp.getTime() === 60 * 60 * 1000; // Проверяем, разница в 1 час
-}
+export function sortOwnerOrders(array: FilteredOrder[]) {
+	const sortedArray = [...array]; // Create a shallow copy to avoid modifying the original array
 
-export function sortUserBookings(bookings: FilteredBooking[]){
-	// Сортировка массива по убыванию даты и времени
-	const sortedData = bookings.sort((a, b) => {
-        const dateA = new Date(`${a.date}T${a.time}`).getTime();
-        const dateB = new Date(`${b.date}T${b.time}`).getTime();
-        return dateB - dateA;
-    });
+	sortedArray.sort((a, b) => {
+		// Compare dates
+		const dateComparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+		if (dateComparison !== 0) {
+		return dateComparison;
+		}
 
-	const mergedData = [];
-    let prevRoom = null;
-    let prevDate = null;
-    let prevTime = null;
-    let currentGroup = null;
+		// If dates are equal, compare the first time value
+		return a.time[0].localeCompare(b.time[0]);
+	});
 
-    for (const obj of sortedData) {
-        if (
-            prevRoom === obj.room_id &&
-            prevDate === obj.date &&
-            prevTime !== null &&
-            isConsecutiveTime(obj.time, prevTime)
-        ){
-            if (currentGroup) {
-                currentGroup.push(obj);
-            } else {
-                currentGroup = [obj];
-                mergedData.push(currentGroup);
-            }
-        } else {
-            currentGroup = [obj];
-            mergedData.push(currentGroup);
-        }
-        prevRoom = obj.room_id;
-        prevDate = obj.date;
-        prevTime = obj.time;
-        
-    }
-
-    return mergedData;
-}
-
-export function sortOwnerBookings(bookings: FilteredBooking[]){
-	// Сортировка массива по убыванию даты и времени
-	const sortedData = bookings.sort((a, b) => {
-        const dateA = new Date(`${a.date}T${a.time}`).getTime();
-        const dateB = new Date(`${b.date}T${b.time}`).getTime();
-        return dateB - dateA;
-    });
-
-	const mergedData = [];
-    let prevRoom = null;
-    let prevDate = null;
-    let prevTime = null;
-	let prevUser = null
-    let currentGroup = null;
-
-    for (const obj of sortedData) {
-        if (prevRoom === obj.room_id && prevDate === obj.date && prevTime !== null && isConsecutiveTime(obj.time, prevTime) && prevUser === obj.user) {
-            currentGroup?.push(obj);
-        } else {
-            currentGroup = { ...obj };
-            currentGroup = [obj];
-            mergedData.push(currentGroup);  
-        }
-        prevRoom = obj.room_id;
-        prevDate = obj.date;
-        prevTime = obj.time;
-        prevUser = obj.user;
-    }
-
-    return mergedData;
+	return sortedArray;
 }
 
 export function hideEmail(email: string ) {
@@ -210,7 +148,8 @@ export function formatDateTime(datetimeString: string) {
 	// Format the date
 	const dateString = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 	const formattedDate = formatDate(dateString);
-
+	console.log(dateString);
+	
 	// Format the time
 	const formattedTime = date.toLocaleTimeString("ru-RU", {
 		hour: "2-digit",

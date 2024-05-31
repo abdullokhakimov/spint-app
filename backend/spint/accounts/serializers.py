@@ -101,15 +101,27 @@ class FilteredBookingSerializer(serializers.ModelSerializer):
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitation
-        fields = ['id', 'sender', 'receiver', 'booking', 'status']
+        fields = ['id', 'sender', 'receiver', 'order', 'status']
 
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ['id', 'type', 'receiver', 'message', 'created_at', 'invitation']
+        fields = ['id', 'type', 'receiver', 'message', 'created_at', 'invitation', 'is_read']
 
 class OrderSerializer(serializers.ModelSerializer):
+    facility_title = serializers.SerializerMethodField()
+    facility_id = serializers.SerializerMethodField()
+    room_id = serializers.IntegerField(source='room.id')
+    room_title = serializers.CharField(source='room.title')
+    invited_users = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['id', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users',]
+
+    def get_facility_title(self, obj):
+        return obj.room.facility.title
+
+    def get_facility_id(self, obj):
+        return obj.room.facility.id

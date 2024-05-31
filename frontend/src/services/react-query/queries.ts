@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { apiAcceptInvitation, apiCreateBooking, apiCreateInvitation, apiCreateNewUser, apiExcludeInvitation, apiLoadBookings, apiLoadFacilities, apiLoadFacilityDetails, apiLoadFacilityMapCoordinates, apiLoadGames, apiLoadNotifications, apiLoadRegions, apiLoadSearchedUsers, apiLoginUser, apiRejectInvitation, apiVerifyNewUser } from "../api";
-import { FacilityDetails, FacilityMapCoordinates, FilteredBooking, Game, loadFacilities, Notification, Region, typeNewUser, typeUser } from "../../types";
+import { apiAcceptInvitation, apiCreateOrder, apiCreateInvitation, apiCreateNewUser, apiExcludeInvitation, apiLoadOrders, apiLoadFacilities, apiLoadFacilityDetails, apiLoadFacilityMapCoordinates, apiLoadGames, apiLoadNotifications, apiLoadRegions, apiLoadSearchedUsers, apiLoginUser, apiRejectInvitation, apiVerifyNewUser, apiLoadUnreadNotifications, apiReadNotifications } from "../api";
+import { FacilityDetails, FacilityMapCoordinates, FilteredOrder, Game, loadFacilities, Notification, Region, typeNewUser, typeUser } from "../../types";
 
 export const useCreateNewUserMutation = () => {
 	return useMutation({
@@ -58,16 +58,16 @@ export const useLoadFacilityDetailsQuery = ({ id }: { id: string | undefined}) =
     });
 };
 
-export const useCreateBookingMutation = () => {
+export const useCreateOrderMutation = () => {
 	return useMutation({
-		mutationFn: ({user, room, date, timeRange}: {user: number; room:number; date:string; timeRange:string[];}) =>  apiCreateBooking({ user, room, date, timeRange })
+		mutationFn: ({user, room, date, timeRange, paymentOption, totalPrice}: {user: number; room:number; date:string; timeRange:string[]; paymentOption: string; totalPrice: number;}) =>  apiCreateOrder({ user, room, date, timeRange, paymentOption, totalPrice })
 	});
 }
 
-export const useLoadBookingsQuery = ({ id }: { id: number }) => {
-    return useQuery<FilteredBooking[], Error>({
-        queryKey: ['bookings', id],
-        queryFn: () => apiLoadBookings(id),
+export const useLoadBookingsQuery = ({ id, is_owner }: { id: number; is_owner: boolean }) => {
+    return useQuery<FilteredOrder[], Error>({
+        queryKey: ['bookings', id, is_owner],
+        queryFn: () => apiLoadOrders(id, is_owner),
 		refetchOnWindowFocus: false,
     });
 };
@@ -81,7 +81,7 @@ export const useLoadSearchedUsersQuery = ({ searchQuery }: { searchQuery: string
 
 export const useCreateInvitationMutation = () => {
 	return useMutation({
-		mutationFn: ({senderID, receiverID, bookingID}: {senderID: number; receiverID: number; bookingID: number;}) =>  apiCreateInvitation({ senderID, receiverID, bookingID })
+		mutationFn: ({senderID, receiverID, orderID}: {senderID: number; receiverID: number; orderID: number;}) =>  apiCreateInvitation({ senderID, receiverID, orderID })
 	});
 }
 
@@ -92,6 +92,20 @@ export const useLoadNotificationsQuery = ({ id }: { id: number }) => {
 		refetchOnWindowFocus: false,
     });
 };
+
+export const useLoadUnreadNotificationsQuery = ({ id }: { id: number }) => {
+    return useQuery({
+        queryKey: ['unread_notifications', id],
+        queryFn: () => apiLoadUnreadNotifications(id),
+		refetchOnWindowFocus: false,
+    });
+};
+
+export const useReadNotificationsMutation = () => {
+	return useMutation({
+		mutationFn: ({userID}: {userID: number;}) =>  apiReadNotifications({ userID })
+	});
+}
 
 export const useAcceptInvitationMutation = () => {
 	return useMutation({
@@ -107,6 +121,6 @@ export const useRejectInvitationMutation = () => {
 
 export const useExcludeInvitationMutation = () => {
 	return useMutation({
-		mutationFn: ({bookingID, excludeUserID}: {bookingID: number; excludeUserID: number;}) =>  apiExcludeInvitation({ bookingID, excludeUserID })
+		mutationFn: ({orderID, excludeUserID}: {orderID: number; excludeUserID: number;}) =>  apiExcludeInvitation({ orderID, excludeUserID })
 	});
 }

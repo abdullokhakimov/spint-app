@@ -95,7 +95,7 @@ function Profile() {
 							<p>{t("profile.about.paragraph3")}</p>
 						</div>
 
-						<span>© 2024 Spint</span>
+						<span>© {t("profile.about.company_name")} 2024</span>
 					</div>
 				</Modal>
 			</div>

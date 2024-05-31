@@ -48,7 +48,24 @@
 .navar__logo {
 	margin-bottom: 20px;
 }
-
+.navbar__notification{
+	position: relative;
+}
+.navbar__notification__unread__length{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 17px;
+	height: 17px;
+	background-color: var(--red);
+	border-radius: 50%;
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 @media (max-width: 500px) {
 	.navbar {
 		position: fixed;

@@ -1,36 +1,21 @@
 from datetime import datetime, timedelta
-from django.db.models import Min, Max
 
-from .models import Booking
+def format_time_range(times):
+    if not times:
+        return ""
 
+    # Parse the first time in the list
+    start_time = datetime.strptime(times[0], "%H:%M")
 
-def get_consecutive_booking_times(date, user, room):
-    # Query all bookings with the same date, user, and room
-    same_bookings = Booking.objects.filter(
-        date=date,
-        user=user,
-        room=room
-    ).order_by('time')
+    # Determine the end time by adding the number of time entries to the start time
+    end_time = start_time + timedelta(hours=len(times))
 
-    # Get the first and last time of consecutive bookings
-    first_time = same_bookings.aggregate(first_time=Min('time'))['first_time']
-    last_time = same_bookings.aggregate(last_time=Max('time'))['last_time']
+    # If end_time goes past midnight, adjust it
+    if end_time.day > start_time.day:
+        end_time = end_time.replace(day=start_time.day)
 
-    # Check for consecutive bookings
-    for booking in same_bookings:
-        if datetime.combine(date, booking.time) - timedelta(hours=1) == datetime.combine(date, last_time):
-            last_time = booking.time
-        else:
-            break
+    # Format the start and end times back to string
+    start_time_str = start_time.strftime("%H:%M")
+    end_time_str = end_time.strftime("%H:%M")
 
-    # Convert time objects to datetime objects
-    first_datetime = datetime.combine(date, first_time)
-    last_datetime = datetime.combine(date, last_time)
-
-    # Check if it's a range or single time
-    if first_time == last_time:
-        # If it's a single time, return it with the next hour
-        return f"{first_time.strftime('%H:%M')}-{(first_datetime + timedelta(hours=1)).time().strftime('%H:%M')}"
-    else:
-        # If it's a range, return the first hour and last + 1 hour
-        return f"{first_time.strftime('%H:%M')}-{(last_datetime + timedelta(hours=1)).time().strftime('%H:%M')}"
+    return f"{start_time_str} - {end_time_str}"

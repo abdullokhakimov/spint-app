@@ -43,7 +43,7 @@ class BookingAdmin(admin.ModelAdmin):
     room_title.short_description = 'Название кабинета'
 
 class InvitationAdmin(admin.ModelAdmin):
-    list_display = ('sender', 'receiver', 'booking', 'status', 'created_at')
+    list_display = ('sender', 'receiver', 'order', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('sender__username', 'receiver__username', 'booking__id')
     readonly_fields = ('created_at',)

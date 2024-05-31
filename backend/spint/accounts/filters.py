@@ -1,6 +1,6 @@
 import django_filters
 from django.db.models import Q
-from .models import Facility, Booking, UserAccount, Notification
+from .models import Facility, UserAccount, Notification, Order
 
 
 class FacilitySearchFilter(django_filters.FilterSet):
@@ -20,14 +20,14 @@ class FacilitySearchFilter(django_filters.FilterSet):
         )
 
 
-class BookingFilter(django_filters.FilterSet):
+class OrderFilter(django_filters.FilterSet):
     user = django_filters.NumberFilter(field_name='user__id')
     owner = django_filters.NumberFilter(field_name='room__facility__owner__id', label="Владелец сооружения id")
 
-
     class Meta:
-        model = Booking
+        model = Order
         fields = ['user']
+
 
 class UserSearchFilter(django_filters.FilterSet):
     username = django_filters.CharFilter(field_name='username', label='Поиск по имени', lookup_expr='icontains')

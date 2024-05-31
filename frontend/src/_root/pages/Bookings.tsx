@@ -4,15 +4,16 @@ import NotLoggedIn from "../../components/parts/NotLoggedIn";
 import { useUserContext } from "../../context/AuthContext";
 import { useLoadBookingsQuery } from "../../services/react-query/queries";
 import '../../styles/Bookings.css'
-import { sortOwnerBookings, sortUserBookings } from "../../utils";
+// import { sortOwnerBookings, sortUserBookings } from "../../utils";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
+import { sortOwnerOrders } from "../../utils";
 
 function Bookings() {
 	const { t } = useTranslation();
 
     const { user, isAuthenticated } = useUserContext();
-	const { isLoading: isLoadingBookings, data: bookings } = useLoadBookingsQuery({ id: user.id });
+	const { isLoading: isLoadingBookings, data: orders } = useLoadBookingsQuery({ id: user.id, is_owner: user.is_owner });
 
     let content = null;	
 	
@@ -26,14 +27,14 @@ function Bookings() {
 						<link rel="canonical" href="https://www.spint.uz" />
 					</Helmet>
 
-                    <h3 className="bookings__title">Брони</h3>
+                    <h3 className="bookings__title">{t("bookings.user__title")}</h3>
                     <ul className="bookings__list__skeleton">
 						<Skeleton count={6} className="bookings__list__item__skeleton"/>
                     </ul>
                 </section>;
-        } else if (bookings && bookings.length > 0 ) {
+        } else if (orders && orders.length > 0 ) {
 			if (user.is_owner == true) {
-				const sortedBookings = sortOwnerBookings(bookings)
+				const sortedOrders = sortOwnerOrders(orders)
 				
 				content = (
 					<section className="bookings">
@@ -45,14 +46,14 @@ function Bookings() {
 
 						<h3 className="bookings__title">{t("bookings.owner__title")}</h3>
 						<ul className="bookings__list">
-							{sortedBookings.map((booking, index) => (
-								<BookingItem key={index} booking={booking}/>
+							{sortedOrders.map((order, index) => (
+								<BookingItem key={index} order={order}/>
 							))}
 						</ul>
 					</section>
 				);
 			} else{
-				const sortedBookings = sortUserBookings(bookings)
+				// const sortedBookings = sortUserBookings(bookings)
 				
 				content = (
 					<section className="bookings">
@@ -64,8 +65,8 @@ function Bookings() {
 
 						<h3 className="bookings__title">{t("bookings.user__title")}</h3>
 						<ul className="bookings__list">
-							{sortedBookings.map((booking, index) => (
-								<BookingItem key={index} booking={booking}/>
+							{orders.map((order, index) => (
+								<BookingItem key={index} order={order}/>
 							))}
 						</ul>
 					</section>
