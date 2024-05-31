@@ -118,7 +118,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users',]
+        fields = ['id', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users', 'payme_checkout_link']
 
     def get_facility_title(self, obj):
         return obj.room.facility.title
