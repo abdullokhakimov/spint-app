@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useUserContext } from "../../context/AuthContext";
 import { calculateHourDifference, formatDate, getNextHour } from "../../utils";
 import { useCreateOrderMutation } from "../../services/react-query/queries";
-import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import Modal from "../ui/Modal";
@@ -20,14 +19,7 @@ function FacilityDetailBook({selectedDate, selectedTimeRange, roomPrice, roomID,
 		return `${year}-${month < 10 ? '0' + month : month}-${day}`
 	}
 	
-	const { mutateAsync: mutateCreateOrder, status } = useCreateOrderMutation();	
-	
-  	const navigate = useNavigate();
-
-	if (status === 'success') {
-        navigate("/orders");
-		toast.success(t("toast.booking__success"))
-    }
+	const { mutateAsync: mutateCreateOrder, status } = useCreateOrderMutation();
 
 	const [price, setPrice] = useState(roomPrice);
     const [paymentType, setPaymentType] = useState("full");

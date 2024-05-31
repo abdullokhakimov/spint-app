@@ -135,6 +135,7 @@ export type TimepickerProps = {
 
 export type FilteredOrder = {
 	id: number;
+	user: any;
 	status: string;
 	is_finished: boolean;
 	facility_title: string;
