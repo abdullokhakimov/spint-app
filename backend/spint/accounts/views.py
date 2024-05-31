@@ -200,27 +200,32 @@ class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
     filterset_class = OrderFilter
 
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
-        # order = self.get_queryset().get(pk=response.data['id'])  # Get the created order instance
-        # order_price = "{:.2f}".format(order_instance.total_price) # Get the created order instance
-        #
-        # paycom = Paycom()
-        # payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order.id, return_url='https://spint.uz/bookings/')
-        #
-        # order_instance.payme_checkout_link = payme_checkout_url
-        # order_instance.save()
-        #
-        # serializer = self.get_serializer(order_instance)
-        # return Response(serializer.data, status=response.status_code)
+        response = super().create(request, *args, **kwargs)
+        order_instance = self.get_queryset().get(pk=response.data['id'])
+        order_price = "{:.2f}".format(order_instance.total_price)
 
-    def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
+        paycom = Paycom()
+        payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order_instance.id,
+                                                          return_url='https://spint.uz/bookings/')
 
-    def perform_update(self, serializer):
-        serializer.save()
+        # Update the link field with the payme_checkout_url
+        order_instance.payme_checkout_link = payme_checkout_url
+        order_instance.save()
+
+        serializer = self.get_serializer(order_instance)
+        return Response(serializer.data, status=response.status_code)
 
     def perform_create(self, serializer):
-        serializer.save()
+        order_instance = serializer.save()
+        order_price = "{:.2f}".format(order_instance.total_price)
+
+        paycom = Paycom()
+        payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order_instance.id,
+                                                          return_url='https://spint.uz/bookings/')
+
+        # Update the link field with the payme_checkout_url
+        order_instance.payme_checkout_link = payme_checkout_url
+        order_instance.save()
 
     @action(detail=True, methods=['post'])
     def exclude_user(self, request, pk=None):
