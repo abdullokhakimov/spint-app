@@ -267,7 +267,7 @@ export async function apiCreateOrder({user, room, date, timeRange, paymentOption
 		status: paymentOption,
 		total_price: totalPriceInSums,
         user: user,
-        room: room,
+        room_id: room,
         date: date,
         time: timeRange
     };
