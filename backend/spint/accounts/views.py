@@ -201,17 +201,17 @@ class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
-        order = self.get_queryset().get(pk=response.data['id'])  # Get the created order instance
-        order_price = "{:.2f}".format(order_instance.total_price) # Get the created order instance
-
-        paycom = Paycom()
-        payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order.id, return_url='https://spint.uz/bookings/')
-
-        order_instance.payme_checkout_link = payme_checkout_url
-        order_instance.save()
-
-        serializer = self.get_serializer(order_instance)
-        return Response(serializer.data, status=response.status_code)
+        # order = self.get_queryset().get(pk=response.data['id'])  # Get the created order instance
+        # order_price = "{:.2f}".format(order_instance.total_price) # Get the created order instance
+        #
+        # paycom = Paycom()
+        # payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order.id, return_url='https://spint.uz/bookings/')
+        #
+        # order_instance.payme_checkout_link = payme_checkout_url
+        # order_instance.save()
+        #
+        # serializer = self.get_serializer(order_instance)
+        # return Response(serializer.data, status=response.status_code)
 
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
