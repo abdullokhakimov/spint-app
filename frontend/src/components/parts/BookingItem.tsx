@@ -84,7 +84,7 @@ function BookingItem ({ order }: { order: FilteredOrder;}) {
 				</li>
 			</ul>
 
-			{ user.is_owner == false ? (
+			{ user.is_owner == false && order.is_finished == true ? (
 			<div className="bookings__item__invate">
 				<button onClick={() => { setShowInvitedUsersModal((prev) => !prev); }} className="bookings__item__invate__button">
 					<span>{t("bookings.item.invite")}</span>
@@ -285,6 +285,8 @@ function BookingItem ({ order }: { order: FilteredOrder;}) {
 				</Modal>
 					
 			</div>
+			) : order.is_finished == false ? (
+				<a className="bookings__item__pay" href={`${order.payme_checkout_link}`}>{t("bookings.item.pay")}</a>
 			) : null}
 		</li>	
 	)
