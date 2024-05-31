@@ -112,13 +112,16 @@ class NotificationSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     facility_title = serializers.SerializerMethodField()
     facility_id = serializers.SerializerMethodField()
-    room_id = serializers.IntegerField(source='room.id')
-    room_title = serializers.CharField(source='room.title')
+    room_id = serializers.PrimaryKeyRelatedField(source='room', queryset=Room.objects.all(), write_only=True)
+    room_title = serializers.CharField(source='room.title', read_only=True)
     invited_users = UserSerializer(many=True, read_only=True)
+    payme_checkout_link = serializers.CharField(read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users', 'payme_checkout_link']
+        fields = [
+            'id', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users', 'payme_checkout_link'
+        ]
 
     def get_facility_title(self, obj):
         return obj.room.facility.title
