@@ -274,7 +274,7 @@ export async function apiCreateOrder({user, room, date, timeRange, paymentOption
 	
 	try {		
         const createOrderResponse = await axios.post(createOrderURL, body, config);
-		console.log(createOrderResponse.data.payme_checkout_link);
+		console.log(createOrderResponse);
 		window.location.href = createOrderResponse.data.payme_checkout_link;
 	} catch (error){		
         toast.error(i18n.t("toast.booking__error"));

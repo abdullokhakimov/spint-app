@@ -26,7 +26,6 @@ function FacilityDetailBook({selectedDate, selectedTimeRange, roomPrice, roomID,
     const [paymentOption, setPaymentOption] = useState("payme");
 
 	const [showCheckoutModal, setShowCheckoutsModal] = useState(false);
-	console.log(roomID);
 	
 	useEffect(() => {
 		if (paymentType == 'deposit' ) {
