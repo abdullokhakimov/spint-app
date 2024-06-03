@@ -41,7 +41,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 PAYCOM_SETTINGS = {
     "KASSA_ID": "6655bcccdc744dbc4b2228ec",  # token
-    "SECRET_KEY": "OtEBqcND%VEObF@ejeudQ2AAhJo%H1@QSZ#H",  # password
+    "SECRET_KEY": "fATYDzE@@Bi1SR&Qz32NtQA1hjVI7gX8g9ks",  # password
     "ACCOUNTS": {
         "KEY": "order_id"
     },
