@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import DatePicker from 'react-datepicker';
 import { useTranslation } from "react-i18next";
+import { getStartDateOfFacility } from "../../utils";
 
-function Datepicker({selectedDate, setSelectedDate}: {selectedDate: Date; setSelectedDate: (date: Date) => void;}) {		
+function Datepicker({selectedDate, setSelectedDate, endTime}: {selectedDate: Date; setSelectedDate: (date: Date) => void; endTime: string;}) {		
 	const { i18n } = useTranslation();
 	
 	const monthString = () => {
@@ -36,7 +37,7 @@ function Datepicker({selectedDate, setSelectedDate}: {selectedDate: Date; setSel
 	return (
 		<DatePicker
 		selected={selectedDate}
-		minDate={new Date()}
+		minDate={getStartDateOfFacility(endTime)}
 		onChange={(date: Date) => setSelectedDate(date)}
 		inline
 		showMonthDropdown={false}

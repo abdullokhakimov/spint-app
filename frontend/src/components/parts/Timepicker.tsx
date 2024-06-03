@@ -8,23 +8,39 @@ const Timepicker: React.FC<TimepickerProps> = ({ selectedDate, interval, room, s
      	const year = selectedDate.getFullYear()
 		const month = selectedDate.getMonth()+1;
 		const day = selectedDate.getDate();
-		return `${year}-${month < 10 ? '0' + month : month}-${day}`
+		return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`
 	}
 	
 	const disabledTimes = () => {
-		const arrayDisabledTimes = room.bookings.flatMap(booking => {
+		const arrayDisabledTimes = room.bookings.flatMap(booking => {						
 			if (booking.date === date()) {
 				return booking.time.slice(0, 5);
 			}
 			return []; // Return an empty array for times that don't meet the conditions
-		});
+		});		
 		return arrayDisabledTimes;
 	} 	
+	
+    const getDynamicStartTime = () => {
+        const currentDate = new Date();
+        const selectedDateOnly = new Date(selectedDate);
+        selectedDateOnly.setHours(0, 0, 0, 0);
+
+        if (currentDate.toDateString() === selectedDateOnly.toDateString()) {
+            const currentHour = currentDate.getHours();
+            const adjustedHour = currentHour + 4;
+            if (adjustedHour >= 24) return "00:00:00"; // If the adjusted hour is beyond the day, reset to midnight
+            return `${adjustedHour < 10 ? '0' + adjustedHour : adjustedHour}:00:00`;
+        }
+		
+        return startTime;
+    };
+	
     // Function to generate time slots array	
 	const generateTimeSlots = () => {
         const timeSlots = [];
         
-        let currentTime = new Date(`01/01/2000 ${startTime}`);
+        let currentTime = new Date(`01/01/2000 ${getDynamicStartTime()}`);
 
         // Loop through the time range with the specified interval
         while (currentTime <= new Date(`01/01/2000 ${endTime}`)) {

@@ -158,3 +158,18 @@ export function formatDateTime(datetimeString: string) {
 
 	return `${formattedDate} ${formattedTime}`;
 }
+
+export function getStartDateOfFacility(endTime: string) {
+	const currentDate = new Date();
+
+    // Parse endTime and create a Date object for today's end time
+    const [endHour, endMinute, endSecond] = endTime.split(':').map(Number);
+    const endTimeDate = new Date();
+    endTimeDate.setHours(endHour, endMinute, endSecond, 0);
+    
+	// Subtract 3 hours from the end time
+    const thresholdTime = new Date(endTimeDate);
+    thresholdTime.setHours(thresholdTime.getHours() - 3);
+    
+	return currentDate >= thresholdTime ? new Date(currentDate.setDate(currentDate.getDate() + 1)) : new Date();
+}

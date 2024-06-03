@@ -4,15 +4,16 @@ import Datepicker from "../parts/Datepicker"
 import Timepicker from "../parts/Timepicker"
 import Benefits from "../parts/Benefits";
 import FacilityDetailBook from "../parts/FacilityDetailBook";
+import { getStartDateOfFacility } from "../../utils";
 
 function FacilityDetailRoom({room, startTime, endTime, facilityTitle}: {room: Room; startTime: string; endTime: string; facilityTitle: string;}) {
 
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState(getStartDateOfFacility(endTime));
     const [selectedTimeRange, setSelectedTimeRange] = useState<string[]>([]);
 	
 	return (
 		<>
-			<Datepicker selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+			<Datepicker selectedDate={selectedDate} setSelectedDate={setSelectedDate} endTime={endTime}/>
 						
 			<Timepicker 
 				selectedDate={selectedDate} 

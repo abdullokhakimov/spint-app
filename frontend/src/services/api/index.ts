@@ -247,7 +247,8 @@ export async function apiLoadFacilityDetails(facilityID: string | undefined) {
 		}
 	};
 	const facilityDetailsResponse = await axios.get(facilityDetailsURL, config);
-		
+	console.log(facilityDetailsResponse.data);
+	
 	return facilityDetailsResponse.data;
 }
 

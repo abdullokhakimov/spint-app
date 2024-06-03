@@ -285,7 +285,7 @@ function BookingItem ({ order }: { order: FilteredOrder;}) {
 				</Modal>
 					
 			</div>
-			) : order.is_finished == false ? (
+			) : order.is_finished == false && user.is_owner == false ? (
 				<a className="bookings__item__pay" href={`${order.payme_checkout_link}`}>{t("bookings.item.pay")}</a>
 			) : null}
 		</li>	
