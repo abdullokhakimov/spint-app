@@ -202,7 +202,7 @@ class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         order_instance = self.get_queryset().get(pk=response.data['id'])
-        order_price = "{:2f}".format(order_instance.total_price)
+        order_price = order_instance.total_price * 100
 
         paycom = Paycom()
         payme_checkout_url = paycom.create_initialization(amount=order_price, order_id=order_instance.id,
