@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h-2mqh0v$4kh#(!)=jqb*^y#&$$#f^at+^ns%uxlb@nmtg#r('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost']
 ALLOWED_HOSTS = ["*"]
@@ -41,7 +41,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 PAYCOM_SETTINGS = {
     "KASSA_ID": "6655bcccdc744dbc4b2228ec",  # token
-    "SECRET_KEY": "OtEBqcND%VEObF@ejeudQ2AAhJo%H1@QSZ#H",  # password
+    "SECRET_KEY": "fATYDzE@@Bi1SR&Qz32NtQA1hjVI7gX8g9ks",  # password
     "ACCOUNTS": {
         "KEY": "order_id"
     },
