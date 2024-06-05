@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-*h-2mqh0v$4kh#(!)=jqb*^y#&$$#f^at+^ns%uxlb@nmtg#r(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost']
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost', 'https://checkout.paycom.uz']
+
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dmuvgzd66',
@@ -220,7 +220,17 @@ DJOSER = {
     }
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = (
+    'https://spint.uz',
+    'https://checkout.paycom.uz'
+)
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://spint.uz',
+    'https://checkout.paycom.uz'
+]
 
 APPEND_SLASH = False
 
