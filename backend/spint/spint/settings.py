@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h-2mqh0v$4kh#(!)=jqb*^y#&$$#f^at+^ns%uxlb@nmtg#r('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost', 'https://checkout.paycom.uz']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost', 'https://checkout.paycom.uz']
+# ALLOWED_HOSTS = ['*']
 
 
 CLOUDINARY_STORAGE = {
@@ -187,7 +187,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=14),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 DJOSER = {
@@ -226,17 +226,17 @@ DJOSER = {
     }
 }
 
-# CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = (
-#     'https://spint.uz',
-#     'https://checkout.paycom.uz'
-# )
-#
-# CSRF_TRUSTED_ORIGINS = [
-#     'https://spint.uz',
-#     'https://checkout.paycom.uz'
-# ]
+CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'https://spint.uz',
+    'https://checkout.paycom.uz'
+)
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://spint.uz',
+    'https://checkout.paycom.uz'
+]
 
 APPEND_SLASH = False
 
