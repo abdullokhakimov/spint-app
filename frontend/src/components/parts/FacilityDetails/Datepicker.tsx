@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import DatePicker from 'react-datepicker';
 import { useTranslation } from "react-i18next";
 import { getStartDateOfFacility } from "../../../utils";
-import "react-datepicker/dist/react-datepicker.css";
 
 function Datepicker({selectedDate, setSelectedDate, endTime}: {selectedDate: Date; setSelectedDate: (date: Date) => void; endTime: string;}) {		
 	const { i18n } = useTranslation();
