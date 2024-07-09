@@ -40,7 +40,7 @@ class UserAccountManager(BaseUserManager):
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, verbose_name='Имя пользователя')
     email = models.EmailField(max_length=255, unique=True, verbose_name='Email')
-    phone_number = models.IntegerField(max_length=12, unique=True, blank=True, null=True, verbose_name="Номер телефона",  validators=[
+    phone_number = models.IntegerField(unique=True, blank=True, null=True, verbose_name="Номер телефона",  validators=[
         RegexValidator(
             regex=r'^\d{1,12}$',
             message="Номер телефона должен состоять из 12 цифр"
