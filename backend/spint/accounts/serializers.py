@@ -5,11 +5,37 @@ from djoser.serializers import UserSerializer
 
 User = get_user_model()
 
-class UserSerializer(UserSerializer):
+
+class UsersListSerializer(serializers.ModelSerializer):
+    logo_url = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'is_owner')
+        fields = ['id', 'username', 'email', 'phone_number', 'logo_url']
 
+    def get_logo_url(self, obj):
+        if obj.logo:
+            print(obj.logo)
+            return obj.logo.url
+        return None
+class UserSerializer(UserSerializer):
+    logo_url = serializers.SerializerMethodField()
+    birth_date = serializers.DateField(format="%d.%m.%Y")
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'phone_number', 'logo_url', 'birth_date', 'favorite_sports', 'free_time', 'home_coordinates', 'is_owner']
+
+    def get_logo_url(self, obj):
+        if obj.logo:
+            print(obj.logo)
+            return obj.logo.url
+        return None
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'logo', 'birth_date', 'favorite_sports', 'free_time', 'home_coordinates']
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Region
@@ -120,7 +146,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'id', 'user', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users', 'payme_checkout_link'
+            'order_uuid', 'id', 'user', 'status', "total_price", "is_finished", 'facility_title', 'facility_id', 'room_id', 'room_title', 'date', 'time', 'invited_users', 'payme_checkout_link'
         ]
 
     def get_facility_title(self, obj):
@@ -128,3 +154,10 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_facility_id(self, obj):
         return obj.room.facility.id
+
+class PhoneNumberSerializer(serializers.Serializer):
+    phone_number = serializers.IntegerField()
+
+class VerifyCodeSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    phone_number = serializers.IntegerField()

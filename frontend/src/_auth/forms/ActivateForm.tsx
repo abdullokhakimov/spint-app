@@ -3,6 +3,7 @@ import { useVerifyNewUserMutation } from '../../services/react-query/queries';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
+import { Oval } from 'react-loader-spinner'
 
 function ActivateForm() {
 	const { t } = useTranslation();
@@ -38,7 +39,17 @@ function ActivateForm() {
 			<form className="authentication__form" onSubmit={onSubmit}>
 				<button className={`singup__form__submit ${isVerifyingNewUser ? 'disabled' : ''}`} disabled={isVerifyingNewUser} type="submit">
 					{isVerifyingNewUser ? (
-						t('others.loading')
+						<Oval
+							visible={true}
+							height="20"
+							width="20"
+							color="#fff"
+							secondaryColor="#F1F4FD"
+							strokeWidth="3"
+							ariaLabel="oval-loading"
+							wrapperStyle={{}}
+							wrapperClass="button__oval-loading"
+						/>
 					) : (
 						t('authentication.activation')
 					)}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import FacilityList from "../../components/shared/FacilityList";
-import Maps from "../../components/parts/Maps";
+import Maps from "../../components/parts/Home/Maps";
 import { useTranslation } from "react-i18next";
 import { Game, Region } from "../../types";
 import { Helmet } from "react-helmet-async";
@@ -28,6 +28,7 @@ function Home() {
 				selectedRegionOption={selectedRegionOption}
 				setSelectedRegionOption={setSelectedRegionOption}
 				showMapOnMobile={showMapOnMobile}
+				setShowMapOnMobile={setShowMapOnMobile}
 			/>
 
 			<Maps 

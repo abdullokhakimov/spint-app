@@ -1,0 +1,436 @@
+.personal-information {
+	max-width: 600px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	margin: 50px auto;
+}
+.personal-information__title {
+	font-size: 32px;
+	font-weight: 700;
+	color: var(--black);
+}
+.personal-information__logo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.personal-information__logo__img,
+.personal-information__logo__img img,
+.personal-information__logo__img svg {
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+.personal-information__logo__add {
+	margin-top: -20px;
+	padding: 7px 12px 7px 35px;
+	background: var(--white);
+	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+	border-radius: 25px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	position: relative;
+}
+.personal-information__logo__add__icon {
+	width: 17px;
+	height: 17px;
+	position: absolute;
+	left: 13px;
+}
+.personal-information__logo__add__input{
+	position: absolute;
+	top: 0; 
+	left: 0; 
+	width: 100%;
+	height: 100%; 
+	opacity: 0;
+	z-index: 1;
+	cursor: pointer;
+}
+.personal-information__logo__add__label{
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--black);
+}
+
+.personal-information__save {
+	width: 100%;
+	padding: 15px 0;
+	margin: 0 auto;
+	border-top: 2px solid var(--grey-light);
+	background: var(--white);
+	transition: 0.3s;
+	position: sticky;
+	bottom: 0;
+}
+.personal-information__save__button {
+	width: 100%;
+	padding: 13px 0;
+	text-align: center;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--white);
+	background: var(--blue);
+	border-radius: 14px;
+	cursor: pointer;
+}
+.personal-information__save__button:active{
+	transform: scale(0.97);
+}
+.personal-information__save__button.disabled{
+	background: var(--blue-disabled);
+}
+.personal-information__content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+.personal-information__content__header{
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.personal-information__content__title {
+	font-size: 22px;
+	font-weight: 600;
+	color: var(--black);
+}
+.personal-information__content__subtitle {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--grey);
+}
+.personal-information__content__list{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+.personal-information__item {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+/* .personal-information__item__button {
+	max-width: 400px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 15px auto 0 auto;
+} 
+.profile__phone__content {
+	margin: 0;
+	cursor: initial;
+	justify-content: start;
+}
+.profile__phone__button {
+	padding: 12px 24px;
+	background: var(--blue);
+	border-radius: 14px;
+	color: var(--white);
+	font-size: 18px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.profile__phone__button:active {
+	transform: scale(0.97);
+}
+*/
+
+.personal-information__item__button{
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 24px;
+	background-color: var(--grey-light);
+	border-radius: 14px;
+	justify-content: space-between;
+	cursor: pointer;
+	transition: 0.3s;
+}
+.personal-information__item__button:active{
+	transform: scale(0.97);
+}
+.personal-information__item__button__text{
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.personal-information__item__button__text span{
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--black);
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.personal-information__item__button__text svg{
+	width: 20px;
+	height: 20px;
+}
+.personal-information__item__button__arrow{
+	height: 14px;
+}
+
+.personal-information__item__modal {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	gap: 20px;
+}
+.personal-information__item__modal__field__error-message {
+	height: 0;
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--red);
+	margin: 0px 0 0 5px;
+	position: relative;
+	transition: 0.3s;
+}
+.personal-information__item__modal__field__error-message::before{
+	content: '';
+	display: block;
+	width: 100%;
+	height: 17px;
+	position: absolute;
+	background: var(--white);
+	transition: 0.3s;	
+}
+.personal-information__item__modal__field__error-message.active{
+	height: initial;
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--red);
+	margin: 10px 0 0 5px;
+}
+.personal-information__item__modal__field__error-message.active::before {
+	bottom: -17px;
+}
+.profile__language__modal__button {
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--black);
+	cursor: pointer;
+}
+.personal-information__item__modal__subtitle {
+	margin-top: -15px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--grey);
+}
+.personal-information__item__modal__buttons {
+	margin-top: 15px;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}
+.personal-information__yes__button,
+.personal-information__no__button{
+	width: 100%;
+	padding: 13px 0;
+	border-radius: 14px;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: 0.3s;
+}
+.personal-information__yes__button{
+	background: var(--blue);
+	color: var(--white);
+}
+.personal-information__no__button{
+	background: var(--grey-light);
+	color: var(--black);
+}
+.personal-information__yes__button:active,
+.personal-information__no__button:active{
+	transform: scale(0.95);
+}
+
+
+
+.personal-information__select-favorite-sports{
+	width: 100%;
+}
+.personal-information__select-favorite-sports__field,
+.personal-information__select-sports-level__field{
+	width: 100%;
+	position: relative;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+.personal-information__select-favorite-sports__field{
+	z-index: 3;
+}
+.personal-information__select-favorite-sports__input,
+.personal-information__select-sports-level__input{
+	width: 100%;
+	padding: 9px 20px;
+	border: 2px solid var(--grey-light);
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--black);
+	cursor: pointer;
+}
+select {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+select::-ms-expand {
+	display: none;
+}
+.personal-information__select-favorite-sports__arrow,
+.personal-information__select-sports-level__arrow{
+	position: absolute;
+	right: 22px;
+}
+.personal-information__select-sports-level__field {
+	margin-top: 0;
+	height: 0;
+	transition: all 0.3s;
+	cursor: default;
+}
+.personal-information__select-sports-level__field::before {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 45px;
+	position: absolute;
+	background: var(--white);
+	transition: all 0.3s;
+	cursor: default;
+}
+.personal-information__select-sports-level__field.active {
+	margin-top: 15px;
+	height: 41.5px;
+	cursor: pointer;
+}
+.personal-information__select-sports-level__field.active::before {
+	bottom: -45px;
+}
+.personal-information__select-sports-level__arrow{
+	opacity: 0;
+	transition: 0.3s;
+}
+.personal-information__select-sports-level__field.active .personal-information__select-sports-level__arrow{
+	opacity: 1;
+}
+.personal-information__selected-sports {
+	width: 100%;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+.personal-information__selected-sports__title {
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--black);
+}
+.personal-information__selected-sports__item{
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.personal-information__selected-sports__item__content {
+	width: calc( 100% - 46.5px);
+	display: flex;
+	gap: 15px;
+	padding: 9px 20px;
+	border: 2px solid var(--grey-light);
+	border-radius: 12px;
+}
+.personal-information__selected-sports__item__content__sport{
+	width: 40%;
+}
+.personal-information__selected-sports__item__content__level{
+	width: 55%;
+}
+.personal-information__selected-sports__item__content__sport,
+.personal-information__selected-sports__item__content__level {
+	display: flex;
+	gap: 10px;
+}
+.personal-information__selected-sports__item__content__sport__name,
+.personal-information__selected-sports__item__content__level__name {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--grey);
+}
+.personal-information__selected-sports__item__content__sport__info,
+.personal-information__selected-sports__item__content__level__info {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--black);
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.personal-information__selected-sports__item__remove{
+	width: 41.5px;
+	height: 41.5px;
+	background: var(--red);
+	border-radius: 12px;
+	cursor: pointer;
+}
+.personal-information__selected-sports__item__remove svg{
+	width: 18px;
+	height: 18px;
+}
+.personal-information__item__modal__address{
+	width: 100%;
+	padding: 10px 15px 0 15px;
+	text-align: center;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--black);
+	border-top: 2px solid var(--grey-light);
+}
+
+@media (max-width: 500px) {
+	.personal-information {
+		height: 100vh;
+		margin: 0;
+		padding: 30px;
+	}
+	.personal-information__logo__img,
+	.personal-information__logo__img img,
+	.personal-information__logo__img svg {
+		width: 140px;
+		height: 140px;
+	}
+	.personal-information__content__list {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+	.personal-information__item__button{
+		padding: 15px 0px;
+		background-color: var(--white);
+		border-radius: 0;
+		border-bottom: 1px solid var(--grey-light);
+	}
+	.personal-information__item__button-home {
+		border: none;
+	}
+	.personal-information__item__button:active{
+		transform: scale(1);
+	}
+}

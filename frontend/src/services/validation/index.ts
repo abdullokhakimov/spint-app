@@ -32,3 +32,13 @@ export const LoginValidation = z
 		username: z.string(),
 		password: z.string(),
 	})
+
+export const ResetPasswordValidation = z
+	.object({
+		new_password: passwordSchema,
+		re_new_password: z.string(),
+	})
+	.refine((data) => data.new_password === data.re_new_password, {
+		message: i18n.t("zod_validation.password__match"),
+		path: ["re_new_password"],
+	});

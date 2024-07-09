@@ -159,7 +159,7 @@ export function formatDateTime(datetimeString: string) {
 	return `${formattedDate} ${formattedTime}`;
 }
 
-export function getStartDateOfFacility(endTime: string) {
+export function getStartDateOfFacility(endTime: string) {	
 	const currentDate = new Date();
 
     // Parse endTime and create a Date object for today's end time
@@ -173,3 +173,43 @@ export function getStartDateOfFacility(endTime: string) {
     
 	return currentDate >= thresholdTime ? new Date(currentDate.setDate(currentDate.getDate() + 1)) : new Date();
 }
+
+export function orderIsEnded(date: string, time: string[] ) {
+    // Combine date and the first time from the array
+    let dateTimeString = `${date}T${time}:00`;
+
+    // Create a Date object from the combined date and time
+    let eventDateTime = new Date(dateTimeString);
+
+    // Get the current date and time
+    let now = new Date();
+
+    // Compare eventDateTime with now
+    if (eventDateTime <= now) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function isValidBirthDate(dateString: string){
+    const parts = dateString.split('.');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+        
+    const currentDate = new Date();
+    const inputDate = new Date(year, month, day);
+
+    // Check if year is within reasonable bounds (e.g., not earlier than 1900 or later than current year)
+    if (year < 1900 || year > currentDate.getFullYear()) {
+        return false;
+    }
+
+    // Check if month and day are valid within the given year
+    if (inputDate.getFullYear() !== year || inputDate.getMonth() !== month || inputDate.getDate() !== day) {
+        return false;
+    }
+
+    return true;
+};

@@ -7,6 +7,7 @@ import { useLoginUserMutation } from "../../services/react-query/queries"
 import { useUserContext } from "../../context/AuthContext"
 import { toast } from "sonner"
 import { useTranslation } from 'react-i18next';
+import { Oval } from "react-loader-spinner"
 
 
 function LoginForm() {
@@ -84,7 +85,17 @@ function LoginForm() {
 
 				<button className={`singup__form__submit ${isLoggingUser || isUserLoading ? 'disabled' : ''}`} disabled={isLoggingUser || isUserLoading} type="submit">
 					{isLoggingUser || isUserLoading ? (
-						t('others.loading')
+						<Oval
+							visible={true}
+							height="20"
+							width="20"
+							color="#fff"
+							secondaryColor="#F1F4FD"
+							strokeWidth="3"
+							ariaLabel="oval-loading"
+							wrapperStyle={{}}
+							wrapperClass="button__oval-loading"
+						/>
 					) : (
 						t('authentication.login')
 					)}

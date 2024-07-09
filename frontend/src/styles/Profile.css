@@ -1,10 +1,10 @@
 .profile{
 	width: 100%;
-	height: 100%;
+	height: 100vh;
 	padding: 30px;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	overflow-y: scroll;
 }
 .profile__title{
 	font-size: 32px;
@@ -12,50 +12,143 @@
 	color: var(--black);
 }
 .profile__logo {
-	margin: 50px auto 0 auto;
-	width: 100px;
-	height: 100px;
+	width: 160px;
+	max-height: 160px;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	font-size: 48px;
-	font-weight: 500;
-	color: var(--white);
-	border-radius: 50%;
-	background: var(--blue);
-	text-transform: uppercase;
+	margin: 0 auto;
 }
-
-.profile__username{
-	font-size: 28px;
+.profile__logo__login{
+	margin-top: -20px;
+	padding: 7px 15px;
+	font-size: 14px;
 	font-weight: 600;
 	color: var(--black);
-	margin: 15px auto 0 auto;
+	background: var(--white);
+	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+	border-radius: 25px;
 }
-.profile__location{
-	margin: 10px auto 0 auto;
-	display: flex;
-	gap: 5px;
-	padding: 5px 13px;
-	border-radius: 15px;
-	background-color: var(--grey-light);
-}
-.profile__location svg{
-	width: 17px;
-	height: 17px;
-}
-.profile__location span {
-	font-size: 14px;
-	font-weight: 500;
-	color: var(--black);
-}
-.profile__email,
-.profile__about__button,
-.profile__contacts__button,
-.profile__languages__button{
+.profile__info {
 	max-width: 400px;
 	width: 100%;
-	margin: 50px auto 0 auto;
+	margin: 30px auto 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+.profile__info__logo,
+.profile__info__logo svg,
+.profile__info__logo img{
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+}
+.profile__info__content {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+.profile__username{
+	font-size: 24px;
+	font-weight: 600;
+	color: var(--black);
+}
+.profile__owner {
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--white);
+	padding: 4px 8px;
+	border-radius: 15px;
+	background-image: linear-gradient(to right, #2BC0E4 0%, #EAECC6 51%, #2BC0E4 100%);
+	transition: 0.5s;
+	background-size: 200% auto;
+	box-shadow: 0 0 20px #eee;
+	cursor: default;
+}
+.profile__owner:hover {
+	background-position: right center;
+	/* change the direction of the change here */
+	color: #fff;
+	text-decoration: none;
+}
+.profile__team{
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--grey);
+}
+.profile__partners {
+	max-width: 400px;
+	width: 100%;
+	height: 96px;
+	padding-left: 20px;
+	background: var(--white);
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+	border: 1px solid var(--grey-light);
+	border-radius: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 30px auto 0 auto;
+}
+.profile__partners__text {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	gap: 10px;
+}
+.profile__partners__text h3{
+	width: 150%;
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--black);
+	z-index: 1;
+}
+.profile__partners__text p {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--grey);
+}
+.profile__partners__img {
+	height: 100%;
+	border-radius: 18px;
+}
+
+.profile__content{
+	max-width: 400px;
+	width: 100%;
+	margin: 30px auto 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+.profile__content__title{
+	font-size: 22px;
+	font-weight: 600;
+	color: var(--black);
+}
+.profile__content__list{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+.profile__phone{
+	max-width: 400px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 15px auto 0 auto;
+}
+.profile__email,
+.profile__phone__content,
+.profile__about__button,
+.profile__contacts__button,
+.profile__languages__button,
+.profile__perosnal-information{
+	max-width: 400px;
+	width: 100%;
 	display: flex;
 	align-items: center;
 	gap: 12px;
@@ -63,30 +156,40 @@
 	background-color: var(--grey-light);
 	border-radius: 14px;
 }
+.profile__phone__content,
 .profile__about__button,
 .profile__contacts__button,
-.profile__languages__button{
-	margin: 15px auto 0 auto;
+.profile__languages__button,
+.profile__perosnal-information{
 	justify-content: space-between;
 	cursor: pointer;
 	transition: 0.3s;
 }
+.profile__phone__content{
+	margin: 0;
+	cursor: initial;
+	justify-content: start;
+}
 .profile__about__button:active,
 .profile__contacts__button:active,
-.profile__languages__button:active{
+.profile__languages__button:active,
+.profile__perosnal-information:active{
 	transform: scale(0.97);
 }
 .profile__about__button__text,
 .profile__contacts__button__text,
-.profile__languages__button__text{
+.profile__languages__button__text,
+.profile__perosnal-information__text{
 	display: flex;
 	align-items: center;
 	gap: 12px;
 }
 .profile__about__button__text span,
 .profile__email span,
+.profile__phone__content span,
 .profile__contacts__button__text span,
-.profile__languages__button__text span{
+.profile__languages__button__text span,
+.profile__perosnal-information__text span{
 	font-size: 18px;
 	font-weight: 500;
 	color: var(--black);
@@ -95,15 +198,30 @@
 	white-space: nowrap;
 }
 .profile__email svg,
+.profile__phone__icon,
 .profile__about__button__text svg,
 .profile__contacts__button__text svg,
-.profile__languages__button__text svg {
+.profile__languages__button__text svg,
+.profile__perosnal-information__text svg {
 	width: 22px;
 	height: 22px;
 }
+.profile__phone__button{
+	padding: 12px 24px;
+	background: var(--blue);
+	border-radius: 14px;
+	color: var(--white);
+	font-size: 18px;
+	font-weight: 500;
+	cursor: pointer;
+}
+.profile__phone__button:active{
+	transform: scale(0.97);
+}
 .profile__about__button__arrow,
 .profile__contacts__button__arrow
-.profile__languages__button__arrow {
+.profile__languages__button__arrow,
+.perosnal-information__button__arrow {
 	height: 14px;
 }
 .profile__language__modal{
@@ -120,24 +238,12 @@
 	cursor: pointer;
 }
 .profile__logout {
-	margin: 30px auto 0 auto;
-	display: flex;
-	align-items: center;
-	gap: 10px;
+	margin: 50px 0 15px 0;
 	cursor: pointer;
-	transition: 0.2s;
-}
-.profile__logout:active{
-	transform: scale(0.97);
-}
-.profile__logout span{
 	font-size: 18px;
 	font-weight: 500;
-	color: var(--red);
-}
-.profile__logout svg{
-	width: 22px;
-	height: 22px;
+	color: var(--black);
+	text-decoration: underline;
 }
 .profile__contacts__modal__phone,
 .profile__contacts__modal__mail {
@@ -182,7 +288,189 @@
 	font-weight: 500;
 	color: var(--grey);
 }
+.phonenumber,
+.verificationcode{
+	display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.phonenumber__modal__subtitle,
+.verificationcode__modal__subtitle,
+.verificationcode__modal__timer span {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--grey);
+}
+.verificationcode__modal__timer{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+}
+.phonenumber__modal__field {
+	width: 100%;
+	position: relative;
+}
+.phonenumber__modal__field input {
+	width: 100%;
+	padding: 11px 20px;
+	border: 2px solid var(--grey-light);
+	border-radius: 14px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--black);
+	z-index: 100;
+}
 
+.phonenumber__modal__field input:focus {
+	border-color: #5153E4;
+}
+
+.phonenumber__modal__field__label {
+	position: absolute;
+	top: 13px;
+	left: 18px;
+	padding: 0 2px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--grey);
+	background-color: var(--white);
+	transition: 0.1s;
+	pointer-events: none;
+}
+
+.phonenumber__modal__field input:focus~.phonenumber__modal__field__label,
+.phonenumber__modal__field input:valid~.phonenumber__modal__field__label {
+	top: -6px;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--blue);
+}
+.phonenumber__modal__button {
+	width: 100%;
+	padding: 13px 0;
+	border-radius: 14px;
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--white);
+	background-color: var(--blue);
+	display: flex;
+	justify-content: center;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.phonenumber__modal__button:active {
+	transform: scale(0.97);
+}
+
+.phonenumber__modal__button.disabled {
+	background-color: var(--blue-disabled);
+	cursor: not-allowed;
+}
+
+.verificationcode__input__container{
+	width: initial;
+	height: 40px;
+	margin: 0 auto;
+	display: flex;
+	gap: 15px;
+}
+.verificationcode__input__character{
+	width: 35px;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 2px solid var(--grey-light);
+	border-radius: 10px;
+	font-weight: 500;
+	font-size: 20px;
+	color: var(--black);
+	box-shadow: none;
+	outline: none;
+	background: none;
+	transition: 0.2s ease-out;
+}
+.verificationcode__input__character.correct{
+	border: 2px solid var(--green);
+}
+.verificationcode__input__character.wrong {
+	border: 2px solid var(--red);
+}
+.verificationcode__input__container.wrong{
+	animation: verificationcode_shake_keyframes 0.2s ease-in-out 0s 2;
+}
+.verificationcode__input__character--selected{
+	border: 2px solid var(--blue);
+}
+.profile__login-redirect{
+	width: 100%;
+	padding: 13px 0;
+	border-radius: 14px;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--white);
+	background-color: var(--blue);
+	text-align: center;
+	transition: 0.3s;
+	cursor: pointer;
+}
+.profile__login-redirect:active {
+	transform: scale(0.97);
+}
+
+@-webkit-keyframes verificationcode_shake_keyframes {
+	0% {left: 0rem;}
+	25% {left: 0.5rem;}
+	75% {left: -0.5rem;}
+	100% {left: 0rem;}
+}
 @media (max-width: 500px) {
-	
+	.profile{
+		height: calc(100vh - 80px);
+	}
+	.profile__logout{
+		margin-bottom: 0;
+	}
+	.profile__partners__text h3{
+		font-size: 16px;
+		font-weight: 600;
+	}
+	.profile__partners__text p {
+		width: 130%;
+		z-index: 1;
+	}
+	.profile__partners__img {
+		left: 30px;
+	}
+	.profile__content__list{
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+	.profile__email,
+	.profile__phone__content,
+	.profile__about__button,
+	.profile__contacts__button,
+	.profile__languages__button,
+	.profile__perosnal-information{
+		padding: 15px 0px;
+		background-color: var(--white);
+		border-radius: 0;
+		border-bottom: 1px solid var(--grey-light);
+	}
+	.profile__contacts__button{
+		border: none;
+	}
+	.profile__about__button:active,
+	.profile__contacts__button:active,
+	.profile__languages__button:active,
+	.profile__perosnal-information{
+		transform: scale(1);
+	}
+	.profile__login-redirect{
+		margin-top: 30px;
+	}
 }

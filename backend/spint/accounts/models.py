@@ -2,6 +2,7 @@ import random
 import string
 
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 import uuid
@@ -39,9 +40,20 @@ class UserAccountManager(BaseUserManager):
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, verbose_name='Имя пользователя')
     email = models.EmailField(max_length=255, unique=True, verbose_name='Email')
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_owner = models.BooleanField(verbose_name="Владелец сооружения", default=False)
+    phone_number = models.IntegerField(max_length=12, unique=True, blank=True, null=True, verbose_name="Номер телефона",  validators=[
+        RegexValidator(
+            regex=r'^\d{1,12}$',
+            message="Номер телефона должен состоять из 12 цифр"
+        ),
+    ],)
+    logo = models.ImageField(upload_to='users', blank=True, null=True, verbose_name="Логотип")
+    birth_date = models.DateField(null=True, blank=True, verbose_name="День рождения")
+    favorite_sports = models.JSONField(default=list, blank=True, verbose_name="Любимые виды спорта")
+    free_time = models.CharField(max_length=30, blank=True, null=True, verbose_name="Свободное время")
+    home_coordinates = models.JSONField(default=list, blank=True, null=True, verbose_name="Координаты места жительства")
+    is_active = models.BooleanField(default=True, verbose_name="Активный")
+    is_staff = models.BooleanField(default=False, verbose_name="Персонал")
+    is_owner = models.BooleanField(default=False, verbose_name="Владелец сооружения")
 
     objects = UserAccountManager()
 
@@ -90,10 +102,10 @@ class Benefit(models.Model):
         ordering = ['pk']
 
 class Facility(models.Model):
-    owner = models.OneToOneField(UserAccount, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.OneToOneField(UserAccount, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Владелец")
     title = models.CharField(max_length=255, verbose_name='Название сооружения')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, verbose_name='Вид сооружения')
-    images = models.ImageField(upload_to='facilities', blank=True, null=True)
+    images = models.ImageField(upload_to='facilities', blank=True, null=True, verbose_name="Изображение")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     phone = models.CharField(unique=True, max_length=30, verbose_name='Телефонный номер владельца')
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name='Район', related_name='fields')
@@ -125,6 +137,10 @@ class Room(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = "Кабинет"
+        verbose_name_plural = "Кабинеты"
+
 class Booking(models.Model):
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Бронировщик", related_name='bookings_as_user')
     room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name='Название комнаты')
@@ -144,16 +160,16 @@ class Order(models.Model):
     ]
 
     id = models.BigAutoField(primary_key=True)
+    order_uuid = models.UUIDField(default=uuid.uuid4, unique=True, verbose_name="UUID Заказа")
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Заказчик", related_name='ordering_as_user')
-    status = models.CharField(max_length=20, choices=PAYMENT_OPTION_CHOICES, default="full")
-    total_price = models.IntegerField(default=0)
-    is_finished = models.BooleanField(default=False)
-    payme_checkout_link = models.CharField(max_length=300, blank=True, null=True, verbose_name="Ссыслка дл оплаты через Payme")
+    status = models.CharField(max_length=20, choices=PAYMENT_OPTION_CHOICES, default="full", verbose_name="Статус")
+    total_price = models.IntegerField(default=0, verbose_name="Обзая цена")
+    is_finished = models.BooleanField(default=False, verbose_name="Оплачен")
+    payme_checkout_link = models.CharField(max_length=300, blank=True, null=True, verbose_name="Ссыслка для оплаты через Payme")
     room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name='Название комнаты')
     date = models.DateField(verbose_name='Дата бронирования', null=True, blank=True)
     time = models.JSONField(default=list, blank=True, verbose_name='Время бронирования')
-    invited_users = models.ManyToManyField(UserAccount, blank=True, verbose_name="Приглашенные пользователи",
-                                           related_name='order_as_invited_user')
+    invited_users = models.ManyToManyField(UserAccount, blank=True, verbose_name="Приглашенные пользователи", related_name='order_as_invited_user')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def save(self, *args, **kwargs):
@@ -173,7 +189,6 @@ class Order(models.Model):
             if not Order.objects.filter(id=random_number).exists():
                 return random_number
 
-
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
@@ -181,11 +196,11 @@ class Order(models.Model):
 
 
 class Invitation(models.Model):
-    sender = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='sent_invitations')
-    receiver = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='received_invitations')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='invitations', default=0)
-    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('excluded', 'Excluded')], default='pending')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создано")
+    sender = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='sent_invitations', verbose_name="Отправитель")
+    receiver = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='received_invitations', verbose_name="Получатель")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='invitations', default=0, verbose_name="Заказ")
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('excluded', 'Excluded')], default='pending', verbose_name="Статус")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def clean(self):
         if self.sender == self.receiver:
@@ -200,13 +215,17 @@ class Invitation(models.Model):
         self.order.invited_users.add(self.receiver)
         self.save()
 
+    class Meta:
+        verbose_name = "Приглашение"
+        verbose_name_plural = "Приглашения"
+
 class Notification(models.Model):
-    type = models.CharField(max_length=20, choices=[('invite_user', 'Invite User'), ('invite_user_action', 'Invite User Action')], default='invite_user')
-    receiver = models.ForeignKey(UserAccount, related_name='received_notifications', on_delete=models.CASCADE)
-    invitation = models.ForeignKey(Invitation, blank=True, null=True, on_delete=models.SET_NULL)
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(max_length=20, choices=[('invite_user', 'Invite User'), ('invite_user_action', 'Invite User Action')], default='invite_user', verbose_name="Тип")
+    receiver = models.ForeignKey(UserAccount, related_name='received_notifications', on_delete=models.CASCADE, verbose_name="Получатель")
+    invitation = models.ForeignKey(Invitation, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="Приглашение")
+    message = models.TextField(verbose_name="Сообщение")
+    is_read = models.BooleanField(default=False, verbose_name="Прочитан")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
     def __str__(self):
         return self.message

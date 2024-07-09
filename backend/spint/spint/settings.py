@@ -25,9 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*h-2mqh0v$4kh#(!)=jqb*^y#&$$#f^at+^ns%uxlb@nmtg#r('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost', 'https://checkout.paycom.uz']
+# ALLOWED_HOSTS = ['spint.uz', 'www.spint.uz', 'http://spint.uz', 'https://spint.uz', '5.182.26.47', 'localhost', 'https://checkout.paycom.uz']
+ALLOWED_HOSTS = ['*']
 
 
 CLOUDINARY_STORAGE = {
@@ -46,6 +47,9 @@ PAYCOM_SETTINGS = {
         "KEY": "order_id"
     },
 }
+
+ESKIZ_EMAIL = 'abdullohxakimov@icloud.com'
+ESKIZ_PASSWORD = 'WAgYxOq14csk77yQ01SZedIiGM1WTVFgQZ0YbGWC'
 
 LANGUAGE_CODE = 'ru'
 
@@ -200,7 +204,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {
         'activation': 'djoser.serializers.ActivationSerializer',
-        'password_reset': 'djoser.serializers.PasswordResetSerializer',
+        'password_reset': 'djoser.serializers.SendEmailResetSerializer',
         'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
         'password_reset_confirm_retype': 'djoser.serializers.PasswordResetConfirmRetypeSerializer',
         'set_password': 'djoser.serializers.SetPasswordSerializer',
@@ -216,21 +220,23 @@ DJOSER = {
     },
     'EMAIL': {
         'activation': 'accounts.email.MyCustomActivationEmail',
-        'confirmation': 'accounts.email.MyCustomConfirmationEmail'
+        'confirmation': 'accounts.email.MyCustomConfirmationEmail',
+        'password_reset': 'accounts.email.MyCustomPasswordResetEmail',
+        'password_changed_confirmation': 'accounts.email.MyCustomPasswordChangedConfirmationEmail'
     }
 }
 
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = (
-    'https://spint.uz',
-    'https://checkout.paycom.uz'
-)
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://spint.uz',
-    'https://checkout.paycom.uz'
-]
+# CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'https://spint.uz',
+#     'https://checkout.paycom.uz'
+# )
+#
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://spint.uz',
+#     'https://checkout.paycom.uz'
+# ]
 
 APPEND_SLASH = False
 

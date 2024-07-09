@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useCreateNewUserMutation } from "../../services/react-query/queries"
 import { useUserContext } from "../../context/AuthContext"
 import { useTranslation } from "react-i18next"
+import { Oval } from "react-loader-spinner"
 
 function SignupForm() {
 	const { t } = useTranslation();
@@ -103,7 +104,17 @@ function SignupForm() {
 				
 				<button className={`singup__form__submit ${isCreatingNewUser ? 'disabled' : ''}`} disabled={isCreatingNewUser} type="submit">
 					{isCreatingNewUser ? (
-						t('others.loading')
+						<Oval
+							visible={true}
+							height="20"
+							width="20"
+							color="#fff"
+							secondaryColor="#F1F4FD"
+							strokeWidth="3"
+							ariaLabel="oval-loading"
+							wrapperStyle={{}}
+							wrapperClass="button__oval-loading"
+						/>
 					) : (
 						t('authentication.signup__title')
 					)}

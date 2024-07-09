@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { FacilityFilters, FacilityItem, FacilitySearch } from "../parts"
-import FacilityItemSkeleton from "../parts/FacilityItemSkeleton";
+import FacilityItemSkeleton from "../parts/Home/FacilityItemSkeleton";
 import { useLoadFacilitiesInfiniteQuery, useLoadGamesQuery, useLoadRegionsQuery } from "../../services/react-query/queries";
 import { useInView } from "react-intersection-observer";
 import { FacilityListProps } from "../../types";
 import { useTranslation } from "react-i18next";
 
-const FacilityList: React.FC<FacilityListProps> = ({selectedGameOption, setSelectedGameOption, selectedRegionOption, setSelectedRegionOption, showMapOnMobile}) => {
+const FacilityList: React.FC<FacilityListProps> = ({selectedGameOption, setSelectedGameOption, selectedRegionOption, setSelectedRegionOption, showMapOnMobile, setShowMapOnMobile}) => {
 	const { t } = useTranslation();
 
 	const { isLoading: isLoadingGames, data: games} = useLoadGamesQuery();
@@ -24,6 +24,12 @@ const FacilityList: React.FC<FacilityListProps> = ({selectedGameOption, setSelec
 			fetchNextPage();
 		}
 	}, [fetchNextPage, inView]);
+
+	useEffect(() => {
+		if (searchQuery !== '') {
+			setShowMapOnMobile(false);
+		}
+	}, [searchQuery]);
 	
 	return (
 		<main className={`main${showMapOnMobile == false ? " active" : ""}`}>

@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { apiAcceptInvitation, apiCreateOrder, apiCreateInvitation, apiCreateNewUser, apiExcludeInvitation, apiLoadOrders, apiLoadFacilities, apiLoadFacilityDetails, apiLoadFacilityMapCoordinates, apiLoadGames, apiLoadNotifications, apiLoadRegions, apiLoadSearchedUsers, apiLoginUser, apiRejectInvitation, apiVerifyNewUser, apiLoadUnreadNotifications, apiReadNotifications } from "../api";
-import { FacilityDetails, FacilityMapCoordinates, FilteredOrder, Game, loadFacilities, Notification, Region, typeNewUser, typeUser } from "../../types";
+import { apiAcceptInvitation, apiCreateOrder, apiCreateInvitation, apiCreateNewUser, apiExcludeInvitation, apiLoadOrders, apiLoadFacilities, apiLoadFacilityDetails, apiLoadFacilityMapCoordinates, apiLoadGames, apiLoadNotifications, apiLoadRegions, apiLoadSearchedUsers, apiLoginUser, apiRejectInvitation, apiVerifyNewUser, apiLoadUnreadNotifications, apiReadNotifications, apiSendVerificationCode, apiSavePhoneNumber, apiLoadOrderByUUID, apiInviteByUuid, apiLoadUsers, apiResetPassword, apiResetPasswordConfirm, apiLoadAddress, apiUpdateUserInformation } from "../api";
+import { FacilityDetails, FacilityMapCoordinates, FilteredOrder, Game, loadFacilities, Notification, Region, typeInitialStateUpdatedUser, typeNewUser, typeUser } from "../../types";
 
 export const useCreateNewUserMutation = () => {
 	return useMutation({
@@ -17,6 +17,24 @@ export const useLoginUserMutation = () => {
 export const useVerifyNewUserMutation = () => {
 	return useMutation({
 		mutationFn: ( newUserUIDToken: string ) =>  apiVerifyNewUser( newUserUIDToken )
+	});
+}
+
+export const useResetPasswordMutation = () => {
+	return useMutation({
+		mutationFn: ( email: string ) =>  apiResetPassword( email )
+	});
+}
+
+export const useResetPasswordConfirmMutation = () => {
+	return useMutation({
+		mutationFn: ({ uid, token, new_password, re_new_password }: { uid: string | undefined; token: string | undefined; new_password: string; re_new_password: string; }) => apiResetPasswordConfirm({ uid, token, new_password, re_new_password })
+	});
+}
+
+export const useUpdateUserInformationMutation = () => {
+	return useMutation({
+		mutationFn: ( user: typeInitialStateUpdatedUser ) =>  apiUpdateUserInformation( user )
 	});
 }
 
@@ -72,6 +90,17 @@ export const useLoadBookingsQuery = ({ id, is_owner }: { id: number; is_owner: b
     });
 };
 
+export const useLoadOrderByUUIDQuery = ({ uuid }: { uuid: string | undefined }) => {
+    if (uuid) {
+        return useQuery<FilteredOrder, Error>({
+            queryKey: ['orderByUUID', uuid],
+            queryFn: () => apiLoadOrderByUUID(uuid),
+            refetchOnWindowFocus: false,
+        });
+    }
+    return { isLoading: false, data: null };
+};
+
 export const useLoadSearchedUsersQuery = ({ searchQuery }: { searchQuery: string }) => {
     return useQuery<typeUser[], Error>({
         queryKey: ['searchedUsers', searchQuery],
@@ -82,6 +111,12 @@ export const useLoadSearchedUsersQuery = ({ searchQuery }: { searchQuery: string
 export const useCreateInvitationMutation = () => {
 	return useMutation({
 		mutationFn: ({senderID, receiverID, orderID}: {senderID: number; receiverID: number; orderID: number;}) =>  apiCreateInvitation({ senderID, receiverID, orderID })
+	});
+}
+
+export const useInviteByUuidMutation = () => {
+	return useMutation({
+		mutationFn: ({senderID, receiverID, orderID}: {senderID: number; receiverID: number; orderID: number;}) =>  apiInviteByUuid({ senderID, receiverID, orderID })
 	});
 }
 
@@ -124,3 +159,30 @@ export const useExcludeInvitationMutation = () => {
 		mutationFn: ({orderID, excludeUserID}: {orderID: number; excludeUserID: number;}) =>  apiExcludeInvitation({ orderID, excludeUserID })
 	});
 }
+
+export const useSendVerificationCodeMutation = () => {
+	return useMutation({
+		mutationFn: ({ phoneNumber }: { phoneNumber: number; }) =>  apiSendVerificationCode({ phoneNumber })
+	});
+}
+
+export const useSavePhoneNumberMutation = () => {
+	return useMutation({
+		mutationFn: ({ userID, phoneNumber }: { userID: number; phoneNumber: number; }) =>  apiSavePhoneNumber({ userID, phoneNumber })
+	});
+}
+
+export const useLoadUsersQuery = () => {
+    return useQuery<typeUser[], Error>({
+        queryKey: ['users'],
+        queryFn: () => apiLoadUsers(),
+    });
+};
+
+export const useLoadAddressQuery = (coordinates: [number, number] | null) => {
+	return useQuery<string, Error>({
+		queryKey: ['address', coordinates],
+		queryFn: () => coordinates ? apiLoadAddress(coordinates) : Promise.reject("No coordinates"),
+		enabled: !!coordinates, // Only run query if coordinates are not null
+	});
+};

@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-05 12:13+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: accounts/views.py:98
+msgid "Неправильный формат времени"
+msgstr "Неправильный формат времени"
+
+#: accounts/views.py:102
+msgid "Создатель бронирования не может быть в списке приглашенных пользователей"
+msgstr "Создатель бронирования не может быть в списке приглашенных пользователей"
+
+#: accounts/views.py:111
+msgid "Бронь на число {request.data.get('date')}, и время {t} уже существует"
+msgstr "Бронь на число {request.data.get('date')}, и время {t} уже существует"
+
+#: accounts/views.py:132
+msgid "Требуется данные пользователя"
+msgstr "Требуется данные пользователя"
+
+#: accounts/views.py:138
+msgid "Пользователь не найден"
+msgstr "Пользователь не найден"
+
+#: accounts/views.py:142
+msgid "Пользователь не в списке приглашенных пользователей"
+msgstr "Пользователь не в списке приглашенных пользователей"
+
+#: accounts/views.py:162
+msgid "Приглашение не найдено"
+msgstr "Приглашение не найдено"
+
+#: accounts/views.py:165
+msgid "Пользователь успешно исключен из списка приглашенных пользователей"
+msgstr "Пользователь успешно исключен из списка приглашенных пользователей"
+
+#: accounts/views.py:178
+msgid "Вы не можете приглашать самого себя"
+msgstr "Вы не можете приглашать самого себя"
+
+#: accounts/views.py:183
+msgid "Только пользователь, создавший бронирование, может отправлять приглашения."
+msgstr "Только пользователь, создавший бронирование, может отправлять приглашения."
+
+#: accounts/views.py:189
+msgid "Вы уже отправляли приглашение этому пользователю для этого бронирования."
+msgstr "Вы уже отправляли приглашение этому пользователю для этого бронирования."
+
+#: accounts/views.py:206
+msgid "Приглашение отправлено"
+msgstr "Приглашение отправлено"
+
+#: accounts/views.py:246
+msgid "Неправильный статус"
+msgstr "Неправильный статус"
+
+#: accounts/views.py:249
+#, python-brace-format
+msgid "Статус приглашения {invitation.id} обновлен на {invitation.status}"
+msgstr "Статус приглашения {invitation.id} обновлен на {invitation.status}"
+
+#: accounts/views.py:328
+msgid "Такой номер телефона уже используется другим пользователем"
+msgstr "Такой номер телефона уже используется другим пользователем"

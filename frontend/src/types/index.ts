@@ -1,8 +1,17 @@
 export type typeUser = {
-	id: number,
-	username: string;
-	email: string;
-	is_owner: boolean
+    id: number;
+    username: string;
+    email: string;
+    phone_number: number | null;
+    logo_url: string | null;
+    birth_date: string | null;
+    favorite_sports: {
+        name: string;
+        level: 'Beginner' | 'Intermediate' | 'Advanced';
+    }[] | null;
+    free_time: string | null;
+    home_coordinates: [number, number] | null;
+    is_owner: boolean;
 };
 
 export type typeNewUser = {
@@ -20,6 +29,18 @@ export type typeUserContext = {
   setUser: React.Dispatch<React.SetStateAction<typeUser>>;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   logout: () => Promise<void>;
+};
+
+export type typeInitialStateUpdatedUser = {
+	username: string;
+	logo: File | string | null;
+	birth_date: string | null;
+	favorite_sports: {
+		name: string;
+		level: 'Beginner' | 'Intermediate' | 'Advanced';
+	}[] | null;
+	free_time: string | null;
+	home_coordinates: [number, number] | null;
 };
 
 export type typeNavLink = {
@@ -72,6 +93,7 @@ export type FacilityListProps = {
 	selectedRegionOption: Region | null;
 	setSelectedRegionOption: (region: Region | null) => void;
 	showMapOnMobile: boolean;
+	setShowMapOnMobile: (newValue: boolean) => void;
 }
 export type FacilityFiltersProps = {
 	games: Game[] | undefined;
@@ -134,6 +156,7 @@ export type TimepickerProps = {
 }
 
 export type FilteredOrder = {
+	order_uuid: string;
 	id: number;
 	user: any;
 	status: string;

@@ -1,16 +1,17 @@
 import { useUserContext } from "../../context/AuthContext";
-import NotLoggedIn from "../../components/parts/NotLoggedIn";
+import NotLoggedIn from "../../components/parts/Profile/NotLoggedIn";
 import { useAcceptInvitationMutation, useLoadNotificationsQuery, useReadNotificationsMutation, useRejectInvitationMutation } from "../../services/react-query/queries";
 import '../../styles/Notifications.css'
 import { formatDateTime } from "../../utils";
 import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useTranslation } from "react-i18next";
+import { Oval } from "react-loader-spinner";
 
 function Notifications() {
 	const { t } = useTranslation();
 
-	const { user, isAuthenticated } = useUserContext();
+	const { user, isAuthenticated, isLoading } = useUserContext();
 	
 	const { isLoading: isLoadingBookings, data: notifications, refetch: refetchNotifications } = useLoadNotificationsQuery({ id: user.id });
 
@@ -32,13 +33,16 @@ function Notifications() {
         }
     }, [acceptInvitationStatus, rejectInvitationStatus, refetchNotifications]);
 	
-	return isAuthenticated === true ? (
+	return isAuthenticated && !isLoading ? (
 		<section className="notifications">
-			<h3 className="notifications__title">{t("notifications.title")}</h3>
 			{ isLoadingBookings === true ? (
-				<ul className="notifications__list__skeleton">
-					<Skeleton count={6} className="notifications__list__skeleton__item"/>
-				</ul>
+				<>
+					<h3 className="notifications__title">{t("notifications.title")}</h3>
+					
+					<ul className="notifications__list__skeleton">
+						<Skeleton count={6} className="notifications__list__skeleton__item"/>
+					</ul>
+				</>
 			) : notifications == undefined || notifications == null || notifications.length < 1 ? (
 				<div className="notifications__noresult">
 					<img src="/assets/images/no-results-img.png" alt="" />
@@ -48,39 +52,93 @@ function Notifications() {
 					<p>{t("notifications.noresult.subtitle")}</p>
 				</div>
 			) : (
-				<ul className="notifications__list">
-					{ notifications.map((notification, index) => (
-						<li className="notifications__list__item" key={index}>
-							{ notification.is_read == false && (
-								<span className="notifications_new"></span>
-							)}
+				<>
+					<h3 className="notifications__title">{t("notifications.title")}</h3>
 
-							<div className="notifications__list__item__header">
-								<h5 className="notifications__list__item__header__title">{t("notifications.item.title")}</h5>
-
-								<span className="notifications__list__item__header__datetime">{ formatDateTime(notification.created_at) }</span>
-							</div>
-							
-							<div className="notifications__list__item__content">
-								<span dangerouslySetInnerHTML={{ __html: notification.message }}></span>
-
-								{notification.type == "invite_user_action" ? (
-									<div className="notifications__list__item__content__buttons">
-										<button onClick={() => {mutateAcceptInvitation({ invitationID: notification.invitation})}} className={`notifications__list__item__content__buttons__accept ${acceptInvitationStatus === 'pending' ? 'disabled' : ''}`} disabled={acceptInvitationStatus === 'pending' || rejectInvitationStatus === 'pending'}>{acceptInvitationStatus === 'pending' ? `${t("notifications.item.accepting")}...` : t("notifications.item.accept")}</button>
-										<button onClick={() => {mutateRejectInvitation({ invitationID: notification.invitation})}} className={`notifications__list__item__content__buttons__reject ${rejectInvitationStatus === 'pending' ? 'disabled' : ''}`} disabled={rejectInvitationStatus === 'pending' || acceptInvitationStatus === 'pending'}>{acceptInvitationStatus === 'pending' ? `${t("notifications.item.rejecting")}...` : t("notifications.item.reject")}</button>
-									</div>
-								) : (
-									null
+					<ul className="notifications__list">
+						{ notifications.map((notification, index) => (
+							<li className="notifications__list__item" key={index}>
+								{ notification.is_read == false && (
+									<span className="notifications_new"></span>
 								)}
-							</div>
-						</li>
-					))}
-				</ul>	
+
+								<div className="notifications__list__item__header">
+									<h5 className="notifications__list__item__header__title">{t("notifications.item.title")}</h5>
+
+									<span className="notifications__list__item__header__datetime">{ formatDateTime(notification.created_at) }</span>
+								</div>
+								
+								<div className="notifications__list__item__content">
+									<span dangerouslySetInnerHTML={{ __html: notification.message }}></span>
+
+									{notification.type == "invite_user_action" ? (
+										<div className="notifications__list__item__content__buttons">
+											<button 
+												onClick={() => {mutateAcceptInvitation({ invitationID: notification.invitation})}} 
+												className={`notifications__list__item__content__buttons__accept ${acceptInvitationStatus === 'pending' ? 'disabled' : ''}`} 
+												disabled={ acceptInvitationStatus === 'pending' || rejectInvitationStatus === 'pending'}>
+													{ acceptInvitationStatus === 'pending' ? 
+														<Oval
+															visible={true}
+															height="20"
+															width="20"
+															color="#fff"
+															secondaryColor="#F1F4FD"
+															strokeWidth="3"
+															ariaLabel="oval-loading"
+															wrapperStyle={{}}
+															wrapperClass="button__oval-loading"
+														/>
+													: 
+														t("notifications.item.accept")
+													}
+											</button>
+											<button 
+												onClick={() => {mutateRejectInvitation({ invitationID: notification.invitation})}} 
+												className={`notifications__list__item__content__buttons__reject ${rejectInvitationStatus === 'pending' ? 'disabled' : ''}`} 
+												disabled={ rejectInvitationStatus === 'pending' || acceptInvitationStatus === 'pending'}>
+													{ rejectInvitationStatus === 'pending' ? 
+														<Oval
+															visible={true}
+															height="20"
+															width="20"
+															color="#fff"
+															secondaryColor="#F1F4FD"
+															strokeWidth="3"
+															ariaLabel="oval-loading"
+															wrapperStyle={{}}
+															wrapperClass="button__oval-loading"
+														/>
+													: 
+														t("notifications.item.reject")
+													}
+											</button>
+										</div>
+									) : (
+										null
+									)}
+								</div>
+							</li>
+						))}
+					</ul>
+				</>
 			)}
 			
 		</section>
-	) : (
+	) : !isAuthenticated && !isLoading ? (
 		<NotLoggedIn/>
+	) : (
+		<Oval
+			visible={true}
+			height="30"
+			width="30"
+			color="#242424"
+			secondaryColor="#A3A4A7"
+			strokeWidth="3"
+			ariaLabel="oval-loading"
+			wrapperStyle={{}}
+			wrapperClass="oval-loading"
+		/>
 	)
 }
 

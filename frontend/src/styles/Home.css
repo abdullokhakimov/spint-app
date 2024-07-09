@@ -179,7 +179,13 @@
 	flex-direction: column;
 	gap: 30px;
 }
-
+.filter__selection__gametype__options__modal__box{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
 .filter__selection__gametype__options__title,
 .filter__selection__region__options__title,
 .bookings__item__invate__modal__main__title {
@@ -437,7 +443,7 @@
 		min-width: auto;
 		height: 100vh;
 		max-height: initial;
-		padding: 145px 15px 0 15px;
+		padding: 145px 15px 15px;
 		margin: 0;
 		display: flex;
 		flex-direction: column;
@@ -486,7 +492,7 @@
 		height: 100%;
 		display: flex;
 		justify-content: start;
-		align-items: center;
+		align-items: end;
 		background-color: rgba(36, 36, 36, 0.2);
 		backdrop-filter: blur(0.7px);
 		opacity: 0;
@@ -508,8 +514,8 @@
 	.filter__selection__gametype__options__modal,
 	.filter__selection__region__options__modal,
 	.bookings__item__invate__modal__main{
-		position: absolute;
-		bottom: -80vh;
+		/* bottom: -80vh; */
+		transform: translateY(80vh);
 		width: 100%;
 		min-height: 200px;
 		padding: 40px 15px;
@@ -534,7 +540,7 @@
 	.filter__selection__gametype__options.active .filter__selection__gametype__options__modal,
 	.filter__selection__region__options.active .filter__selection__region__options__modal,
 	.bookings__item__invate__modal.active .bookings__item__invate__modal__main{
-		bottom: 0;
+		transform: translateY(0);
 	}
 	.filter__selection__gametype__options__title__icon-close,
 	.filter__selection__region__options__title__icon-close,
@@ -553,11 +559,13 @@
 		color: var(--black);
 	}
 	.facilities{
+		display: none;
 		overflow: initial;
 	}
 	.facilities__list {
 		overflow-y: initial;
 		gap: 30px;
+		padding-bottom: 50px;
 	}
 	.facilities__item,
 	.facilities__item__skeleton {
@@ -576,5 +584,8 @@
 	.main.active .news{
 		opacity: 1;
 		visibility: visible;
+	}
+	.main.active .facilities{
+		display: flex;
 	}
 }

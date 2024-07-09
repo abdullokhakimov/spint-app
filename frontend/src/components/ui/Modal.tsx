@@ -4,7 +4,7 @@ const Modal: React.FC<ModalProps> = ({ showModal, onModalClose, title, children 
 	const handleModalContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation();
 	};
-	
+
 	return (
 		<div onClick={onModalClose} className={`filter__selection__gametype__options ${showModal ? 'active' : ''}`} aria-modal={showModal}>
 			<div onClick={handleModalContentClick} className="filter__selection__gametype__options__modal">

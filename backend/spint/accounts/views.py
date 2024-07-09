@@ -1,10 +1,12 @@
 import locale
+import random
+
 from babel.dates import format_date
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, mixins, pagination, status
+from rest_framework import viewsets, mixins, pagination, status, permissions
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView, UpdateAPIView
 from djoser.serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
@@ -14,8 +16,9 @@ from .filters import FacilitySearchFilter, UserSearchFilter, NotificationFilter,
 from .models import Facility, Region, Game, Benefit, Room, Booking, Invitation, Notification, Order
 from .serializers import RegionSerializer, BookingSerializer, GameSerializer, BenefitSerializer, FacilityListSerializer, \
     FacilityDetailSerializer, FacilityMapCoordinatesListSerializer, RoomSerializer, \
-    InvitationSerializer, NotificationSerializer, OrderSerializer
-from .utils import format_time_range
+    InvitationSerializer, NotificationSerializer, OrderSerializer, PhoneNumberSerializer, VerifyCodeSerializer, \
+    UpdateUserSerializer, UsersListSerializer
+from .utils import format_time_range, send_sms_verification_code
 from django.utils.translation import gettext as _
 from paycomuz import Paycom
 from paycomuz.views import MerchantAPIView
@@ -24,9 +27,17 @@ User = get_user_model()
 
 class UserListView(ListAPIView):
     queryset = User.objects.filter(is_staff=False, is_superuser=False)
-    serializer_class = UserSerializer
+    serializer_class = UsersListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = UserSearchFilter
+
+class UpdateUserView(UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UpdateUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 class RegionListView(ListAPIView):
     queryset = Region.objects.all()
@@ -83,7 +94,6 @@ class InvitationViewSet(viewsets.ModelViewSet):
     serializer_class = InvitationSerializer
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
         sender = User.objects.get(id=request.data.get('sender'))
         receiver = User.objects.get(id=request.data.get('receiver'))
         order = Order.objects.get(id=request.data.get('order'))
@@ -134,7 +144,7 @@ class InvitationViewSet(viewsets.ModelViewSet):
                 notification = Notification.objects.create(
                     type='invite_user',
                     receiver=invitation.sender,
-                    message_ru=f"{invitation.receiver.username} принял ваше приглашение на игру",
+                    message_ru=f"{invitation.receiver.username} принял ваше приглашение в игру",
                     message_uz=f"{invitation.receiver.username} o'yinga taklifingizni qabul qildi",
                     invitation=invitation
                 )
@@ -151,7 +161,7 @@ class InvitationViewSet(viewsets.ModelViewSet):
                 notification = Notification.objects.create(
                     type='invite_user',
                     receiver=invitation.sender,
-                    message_ru=f"{invitation.receiver.username} отклонил ваше приглашение на игру",
+                    message_ru=f"{invitation.receiver.username} отклонил ваше приглашение в игру",
                     message_uz=f"{invitation.receiver.username} o'yinga taklifingizni rad etdi",
                     invitation=invitation
                 )
@@ -162,6 +172,27 @@ class InvitationViewSet(viewsets.ModelViewSet):
 
         success_message = _(f"Статус приглашения {invitation.id} обновлен на {invitation.status}")
         return Response({"message": success_message})
+
+    @action(detail=False, methods=['post'])
+    def invite_by_uuid(self, request, *args, **kwargs):
+        sender = User.objects.get(id=request.data.get('sender'))
+        receiver = User.objects.get(id=request.data.get('receiver'))
+        order = Order.objects.get(id=request.data.get('order'))
+
+        invitation = Invitation.objects.create(sender=sender, receiver=receiver, order=order, status='accepted')
+        invitation.save()
+        invitation.accept()
+
+        notification = Notification.objects.create(
+            type='invite_user',
+            receiver=invitation.sender,
+            message_ru=f"{invitation.receiver.username} принял ваше приглашение в игру",
+            message_uz=f"{invitation.receiver.username} o'yinga taklifingizni qabul qildi",
+            invitation=invitation
+        )
+        notification.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 class NotificationViewSet(ModelViewSet):
     queryset = Notification.objects.all()
@@ -198,6 +229,15 @@ class OrderViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.Up
     serializer_class = OrderSerializer
     filter_backends = [DjangoFilterBackend]  # Add filter backend
     filterset_class = OrderFilter
+
+    @action(detail=False, methods=['get'], url_path='by-uuid/(?P<order_uuid>[^/.]+)')
+    def get_by_uuid(self, request, order_uuid=None):
+        try:
+            order = Order.objects.get(order_uuid=order_uuid)
+            serializer = self.get_serializer(order)
+            return Response(serializer.data)
+        except Order.DoesNotExist:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -312,3 +352,42 @@ class CheckOrder(Paycom):
 
 class TestView(MerchantAPIView):
     VALIDATE_CLASS = CheckOrder
+
+
+class SendVerificationCodeView(GenericAPIView):
+    serializer_class = PhoneNumberSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            phone_number = serializer.validated_data['phone_number']
+
+            if User.objects.filter(phone_number=phone_number).exists():
+                error_message = _("Такой номер телефона уже используется другим пользователем")
+                return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
+
+            verification_code = f'{random.randint(1000, 9999)}'
+
+            # Send the SMS
+            # send_verification = send_sms_verification_code(phone_number=phone_number, verification_code=verification_code)
+            # if send_verification == 'FAILED':
+            #     return Response('FAILED', status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'phone_number': phone_number, 'verification_code': verification_code}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyCodeAndAddPhoneNumberView(GenericAPIView):
+    serializer_class = VerifyCodeSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user_id = serializer.validated_data['user_id']
+            phone_number = serializer.validated_data['phone_number']
+
+            user = User.objects.get(id=user_id)
+            user.phone_number = phone_number
+            user.save()
+
+            return Response({'detail': 'Phone number updated successfully'}, status=status.HTTP_200_OK)

@@ -21,12 +21,17 @@ class FacilitySearchFilter(django_filters.FilterSet):
 
 
 class OrderFilter(django_filters.FilterSet):
-    user = django_filters.NumberFilter(field_name='user__id')
+    user = django_filters.NumberFilter(method='filter_by_user_or_invited_user')
     owner = django_filters.NumberFilter(field_name='room__facility__owner__id', label="Владелец сооружения id")
 
     class Meta:
         model = Order
         fields = ['user']
+
+    def filter_by_user_or_invited_user(self, queryset, name, value):
+        return queryset.filter(
+            Q(user_id=value) | Q(invited_users__id=value)
+        ).distinct()
 
 
 class UserSearchFilter(django_filters.FilterSet):

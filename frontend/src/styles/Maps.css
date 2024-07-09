@@ -110,7 +110,7 @@
 		left: 0;
 		padding: 0;
 		height: calc(100vh - 198.5px);
-		z-index: 1;
+		z-index: 0;
 	}
 	.map {
 		border-radius: 0;

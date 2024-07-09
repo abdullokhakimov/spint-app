@@ -1,7 +1,6 @@
 .teams {
-	margin-top: 50px;
 	width: 100%;
-	height: 100%;
+	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -30,8 +29,8 @@
 }
 
 @media (max-width: 500px) {
-	.teams{
-		margin-top: 150px;
+	.teams {
+		height: calc(100vh - 200px);
 	}
 	.teams img {
 		width: 250px;

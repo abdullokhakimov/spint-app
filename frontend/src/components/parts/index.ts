@@ -1,5 +1,5 @@
-export { default as FacilitySearch } from './FacilitySearch'
-export { default as FacilityFilters } from './FacilityFilters'
-export { default as HomeNews } from './HomeNews'
-export { default as FacilityItem } from './FacilityItem'
+export { default as FacilitySearch } from './Home/FacilitySearch'
+export { default as FacilityFilters } from './Home/FacilityFilters'
+export { default as HomeNews } from './Home/HomeNews'
+export { default as FacilityItem } from './Home/FacilityItem'
 

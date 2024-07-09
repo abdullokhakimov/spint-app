@@ -166,7 +166,12 @@
 	font-weight: 700;
 	color: var(--black);
 }
-
+.button__oval-loading{
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 @media (max-width: 1300px) {
 	.authentication__background {
 		width: 70%;
